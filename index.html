@@ -475,6 +475,86 @@ body{
   padding:.14rem .48rem;border-radius:var(--r-pill)
 }
 
+/* ── TIER SELECTOR (vote cards) ──────────────────────────── */
+.vc-tier-row{display:flex;gap:.3rem}
+.btn-tier{
+  flex:1;padding:.32rem .15rem;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.45);
+  font-family:'Inter',sans-serif;
+  font-size:.62rem;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  text-align:center;white-space:nowrap
+}
+.btn-tier:hover{border-color:rgba(255,255,255,.28);color:rgba(255,255,255,.75)}
+.btn-tier.sel-must{background:rgba(239,68,68,.22);border-color:rgba(239,68,68,.65);color:#fca5a5}
+.btn-tier.sel-high{background:rgba(234,179,8,.22);border-color:rgba(234,179,8,.65);color:#fde68a}
+.btn-tier.sel-strategic{background:rgba(34,197,94,.22);border-color:rgba(34,197,94,.65);color:#86efac}
+
+/* ── TIER DISTRIBUTION (results) ────────────────────────── */
+.tier-dist{display:flex;gap:.28rem;align-items:center;margin-top:.35rem;flex-wrap:wrap}
+.tier-pill{
+  display:inline-flex;align-items:center;gap:.25rem;
+  font-size:.64rem;font-weight:700;
+  padding:.14rem .48rem;border-radius:var(--r-pill)
+}
+.tier-pill.must{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.tier-pill.high{background:rgba(234,179,8,.2);color:#fde68a;border:1px solid rgba(234,179,8,.4)}
+.tier-pill.strategic{background:rgba(34,197,94,.2);color:#86efac;border:1px solid rgba(34,197,94,.4)}
+.tier-final-badge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-size:.7rem;font-weight:800;
+  padding:.22rem .65rem;border-radius:var(--r-pill);
+  letter-spacing:.02em
+}
+.tier-final-badge.must{background:#ef4444;color:#fff}
+.tier-final-badge.high{background:#eab308;color:#1a1a1a}
+.tier-final-badge.strategic{background:#22c55e;color:#fff}
+
+/* ── FAC VOTING NOTE ─────────────────────────────────────── */
+.fac-voting-note{
+  background:rgba(255,184,28,.08);
+  border:1px solid rgba(255,184,28,.28);
+  border-radius:10px;
+  padding:.7rem 1rem;
+  font-size:.75rem;color:rgba(255,220,100,.9);
+  line-height:1.5;
+  max-width:var(--max-w);
+  width:calc(100% - 3.5rem);
+  margin:0 auto .25rem
+}
+
+/* ── TIMER ───────────────────────────────────────────────── */
+.timer-display{
+  font-size:2.6rem;font-weight:800;color:var(--gold);
+  font-variant-numeric:tabular-nums;letter-spacing:.06em;
+  text-align:center;line-height:1;padding:.4rem 0 .2rem
+}
+.timer-display.urgent{color:#f87171;animation:timerBlink 1s step-end infinite}
+@keyframes timerBlink{50%{opacity:.5}}
+.timer-phase-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-muted);
+  text-align:center;margin-bottom:.5rem
+}
+.timer-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.65rem}
+.timer-btn{
+  flex:1;min-width:80px;
+  background:rgba(255,255,255,.07);
+  border:1px solid var(--border);border-radius:var(--r-btn);
+  color:var(--text);font-family:'Inter',sans-serif;
+  font-size:.72rem;font-weight:600;
+  padding:.42rem .4rem;cursor:pointer;
+  transition:background .15s;text-align:center;line-height:1.3
+}
+.timer-btn:hover{background:rgba(255,255,255,.13)}
+.timer-btn.active{background:rgba(255,184,28,.15);border-color:var(--border-gold);color:var(--gold)}
+.timer-schedule{
+  font-size:.67rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6
+}
+
 /* ROLE TABLE */
 .role-table{width:100%;border-collapse:collapse;font-size:.78rem}
 .role-table th{
@@ -496,32 +576,6 @@ body{
   background:linear-gradient(90deg,var(--navy),var(--gold));
   border-radius:var(--r-pill);transition:width .6s ease
 }
-
-/* ── RESULT TABS ─────────────────────────────────────────── */
-.res-tabs{
-  display:flex;gap:.35rem;margin-bottom:1.25rem;
-  border-bottom:1px solid var(--border);padding-bottom:0
-}
-.res-tab{
-  background:transparent;border:none;
-  color:var(--text-muted);font-family:'Inter',sans-serif;
-  font-size:.78rem;font-weight:600;
-  padding:.6rem 1.1rem;cursor:pointer;
-  border-bottom:2px solid transparent;
-  margin-bottom:-1px;
-  transition:color .15s,border-color .15s;
-  letter-spacing:.02em
-}
-.res-tab:hover{color:var(--white)}
-.res-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-.tab-panel{display:none}
-.tab-panel.active{display:contents}
-.tab-panel-block{display:none}
-.tab-panel-block.active{display:block}
-
-/* quadrant chart container needs fixed height */
-#quadrant-wrap{position:relative;height:420px}
-#quadrant-wrap canvas{position:absolute;inset:0}
 
 /* ── FAC LOGIN ───────────────────────────────────────────── */
 #fac-login{
@@ -818,6 +872,9 @@ body{
       </div>
     </div>
   </div>
+  <div id="fac-voting-note" class="fac-voting-note" hidden>
+    📋 Participants vote via microsite on their phones/laptops — use <strong>Reveal Results</strong> to show output, and override tier if needed.
+  </div>
   <div class="vote-body">
     <div class="vote-grid" id="vote-grid"></div>
     <div class="vote-submit-area">
@@ -848,47 +905,21 @@ body{
       </div>
       <div class="rb-meta" id="results-meta"></div>
     </div>
-    <!-- TAB BAR -->
-    <div class="res-tabs">
-      <button class="res-tab active" onclick="switchTab('votes')">Vote Totals</button>
-      <button class="res-tab" onclick="switchTab('quadrant')">Effort vs Impact</button>
-      <button class="res-tab" onclick="switchTab('roles')">By Role</button>
-    </div>
-
-    <!-- TAB: VOTES -->
-    <div id="tab-votes" class="tab-panel-block active">
-      <div class="results-layout">
-        <div class="panel">
-          <div class="panel-title">Vote Totals</div>
-          <canvas id="results-chart"></canvas>
-        </div>
-        <div class="panel">
-          <div class="panel-title">Ranked Initiatives</div>
-          <div class="ranked-list" id="ranked-list"></div>
-        </div>
+    <!-- VOTE TOTALS + ROLE BREAKDOWN (single view, no tabs) -->
+    <div class="results-layout">
+      <div class="panel">
+        <div class="panel-title">Vote Totals</div>
+        <canvas id="results-chart"></canvas>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Ranked Initiatives</div>
+        <div class="ranked-list" id="ranked-list"></div>
       </div>
     </div>
-
-    <!-- TAB: QUADRANT -->
-    <div id="tab-quadrant" class="tab-panel-block">
-      <div class="panel" style="margin-bottom:1.5rem">
-        <div class="panel-title">Effort vs Impact — where does each initiative sit?</div>
-        <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:1rem">
-          X-axis = estimated effort (T-shirt size set by facilitator) &nbsp;·&nbsp;
-          Y-axis = votes received &nbsp;·&nbsp;
-          Initiatives without a size are plotted at X = 0
-        </div>
-        <div id="quadrant-wrap"><canvas id="quadrant-chart"></canvas></div>
-      </div>
-    </div>
-
-    <!-- TAB: ROLES -->
-    <div id="tab-roles" class="tab-panel-block">
-      <div class="panel" style="margin-bottom:1.5rem">
-        <div class="panel-title">Breakdown by Stakeholder Role</div>
-        <div style="overflow-x:auto">
-          <table class="role-table" id="role-table"></table>
-        </div>
+    <div class="panel" style="margin-bottom:1.5rem">
+      <div class="panel-title">Breakdown by Stakeholder Role</div>
+      <div style="overflow-x:auto">
+        <table class="role-table" id="role-table"></table>
       </div>
     </div>
 
@@ -904,6 +935,24 @@ body{
     <div class="fac-header">
       <div class="fac-title">🎛 Facilitator Controls</div>
       <button class="btn-close" onclick="closeFac()">✕</button>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">Session Timing</div>
+      <div class="timer-phase-label" id="timer-phase-label">Voting phase opens at 0:25</div>
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-btns">
+        <button class="timer-btn" id="tbtn-start" onclick="timerStart()">▶ Start</button>
+        <button class="timer-btn" id="tbtn-pause" onclick="timerPause()" disabled>⏸ Pause</button>
+        <button class="timer-btn" onclick="timerReset(25,'Voting phase opens at 0:25')">↺ 25m</button>
+        <button class="timer-btn" onclick="timerReset(20,'Results reveal at 0:45 (20 min remaining)')">↺ 20m</button>
+      </div>
+      <div class="timer-schedule">
+        📍 <strong style="color:rgba(255,255,255,.8)">0:00</strong> — Session starts<br>
+        📍 <strong style="color:rgba(255,255,255,.8)">0:25</strong> — Open voting (start 25m timer)<br>
+        📍 <strong style="color:rgba(255,255,255,.8)">0:45</strong> — Reveal results (start 20m timer)<br>
+        📍 <strong style="color:rgba(255,255,255,.8)">1:05</strong> — Close workshop
+      </div>
     </div>
 
     <div class="fac-section">
@@ -929,6 +978,12 @@ body{
     <div class="fac-section">
       <div class="fac-section-title">T-Shirt Sizing (Effort / Cost)</div>
       <div id="tshirt-rows"></div>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">Tier Override (facilitator-set final tier)</div>
+      <div style="font-size:.7rem;color:var(--text-muted);margin-bottom:.75rem">Override the participant-voted consensus. Shown as the definitive tier in results.</div>
+      <div id="tier-override-rows"></div>
     </div>
 
     <div class="fac-section">
@@ -1055,10 +1110,33 @@ function matrix() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// TIERS
+// ─────────────────────────────────────────────────────────────
+const TIERS = [
+  { id:'must',       label:'🔴 Must Have',  cls:'must'      },
+  { id:'high',       label:'🟡 High Value', cls:'high'      },
+  { id:'strategic',  label:'🟢 Strategic',  cls:'strategic' },
+];
+
+function tierCfg(id) { return TIERS.find(t=>t.id===id) || TIERS[2]; }
+function tierOverrides() { return load().tierOverrides || {}; }
+
+// Consensus tier for an initiative: facilitator override wins; else majority vote
+function consensusTier(i, voters) {
+  const ov = tierOverrides()[i];
+  if (ov) return ov;
+  const counts = {must:0,high:0,strategic:0};
+  voters.forEach(v => { if (v[`t${i}`]) counts[v[`t${i}`]]++; });
+  const best = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  return best && best[1] > 0 ? best[0] : null;
+}
+
+// ─────────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────────
 let voter   = null;
 let myVotes = new Array(USE_CASES.length).fill(0);
+let myTiers = new Array(USE_CASES.length).fill(null);
 
 // ─────────────────────────────────────────────────────────────
 // INIT
@@ -1102,6 +1180,7 @@ function startVoting() {
   if (!name) { document.getElementById('inp-name').focus(); return; }
   voter   = { name, role: document.getElementById('inp-role').value };
   myVotes = new Array(USE_CASES.length).fill(0);
+  myTiers = new Array(USE_CASES.length).fill(null);
 
   // Show voter badge in nav
   const badge = document.getElementById('nav-voter-badge');
@@ -1111,6 +1190,8 @@ function startVoting() {
   showView('view-voting');
   buildVoteGrid();
   syncVoteUI();
+  // Show fac note if fac session is live (sessionStorage flag set by openFac)
+  document.getElementById('fac-voting-note').hidden = !sessionStorage.getItem('w360_fac');
 }
 
 function buildVoteGrid() {
@@ -1141,6 +1222,10 @@ function buildVoteGrid() {
           onclick="bump(${i},+1)">+</button>
       </div>
       <div class="vc-max-hint" id="vc-hint-${i}">max ${MAX_PER_UC}</div>
+      <div class="vc-tier-row">
+        ${TIERS.map(t=>`<button class="btn-tier" id="bt-${i}-${t.id}"
+          onclick="setTier(${i},'${t.id}')">${t.label}</button>`).join('')}
+      </div>
     </div>`;
   }).join('');
 }
@@ -1155,6 +1240,11 @@ function bump(i, d) {
   syncVoteUI();
 }
 
+function setTier(i, tierId) {
+  myTiers[i] = myTiers[i] === tierId ? null : tierId;
+  syncVoteUI();
+}
+
 function triggerGlow(i) {
   const card = document.getElementById(`vc-${i}`);
   card.classList.remove('glow-anim');
@@ -1163,34 +1253,42 @@ function triggerGlow(i) {
 }
 
 function syncVoteUI() {
-  const used  = myVotes.reduce((a,b)=>a+b,0);
-  const rem   = TOTAL_VOTES - used;
-  const done  = used === TOTAL_VOTES;
+  const used      = myVotes.reduce((a,b)=>a+b,0);
+  const rem       = TOTAL_VOTES - used;
+  const votesDone = used === TOTAL_VOTES;
+  const tiersDone = myTiers.every(t => t !== null);
+  const allDone   = votesDone && tiersDone;
 
   // Big counter
   const numEl = document.getElementById('vote-counter-num');
   const wrap  = document.getElementById('vote-counter-wrap');
-  numEl.textContent = done ? '✓' : rem;
+  numEl.textContent = votesDone ? '✓' : rem;
   numEl.classList.remove('bump');
   void numEl.offsetWidth;
   numEl.classList.add('bump');
   setTimeout(() => numEl.classList.remove('bump'), 200);
-  wrap.classList.toggle('done', done);
+  wrap.classList.toggle('done', allDone);
 
   // Sub
-  document.getElementById('vote-hero-sub').textContent = done
-    ? '✓ All votes placed — review and submit below'
-    : `${rem} vote${rem===1?'':' '}left · max ${MAX_PER_UC} per initiative`;
+  const tiersLeft = myTiers.filter(t=>t===null).length;
+  document.getElementById('vote-hero-sub').textContent = allDone
+    ? '✓ All votes and tiers set — submit below'
+    : !votesDone
+      ? `${rem} vote${rem===1?'':' '}left · then assign a tier to each initiative`
+      : `${tiersLeft} tier${tiersLeft===1?'':' '}still to assign`;
 
   // Submit
   const sub = document.getElementById('btn-submit');
-  sub.disabled = !done;
-  document.getElementById('vote-hint').textContent = done
+  sub.disabled = !allDone;
+  document.getElementById('vote-hint').textContent = allDone
     ? 'Happy with your choices? Hit submit.'
-    : `Place all ${TOTAL_VOTES} votes to enable submit · Max ${MAX_PER_UC} per initiative`;
+    : !votesDone
+      ? `Place all ${TOTAL_VOTES} votes, then assign 🔴🟡🟢 tier to each initiative`
+      : `Assign a tier to each initiative to enable submit`;
 
   USE_CASES.forEach((_,i) => {
     const v    = myVotes[i];
+    const tier = myTiers[i];
     const card = document.getElementById(`vc-${i}`);
     card.classList.toggle('has-votes', v > 0);
     card.classList.toggle('maxed',     v >= MAX_PER_UC);
@@ -1200,15 +1298,24 @@ function syncVoteUI() {
     document.getElementById(`bplus-${i}`).disabled       = v >= MAX_PER_UC || rem <= 0;
     document.getElementById(`vc-hint-${i}`).textContent  =
       v >= MAX_PER_UC ? '● maxed out' : `max ${MAX_PER_UC}`;
+    // Tier buttons
+    TIERS.forEach(t => {
+      const btn = document.getElementById(`bt-${i}-${t.id}`);
+      if (btn) {
+        btn.className = 'btn-tier' + (tier===t.id ? ` sel-${t.id}` : '');
+      }
+    });
   });
 }
 
 function submitVotes() {
   if (!voter) return;
   if (myVotes.reduce((a,b)=>a+b,0) < TOTAL_VOTES) return;
+  if (myTiers.some(t=>t===null)) return;
   const votes  = allVotes();
   const entry  = { _name: voter.name, _role: voter.role };
   myVotes.forEach((v,i) => { if (v > 0) entry[i] = v; });
+  myTiers.forEach((t,i) => { entry[`t${i}`] = t; });
   votes[voter.name] = entry;
   save({ votes });
   showView('view-waiting');
@@ -1224,27 +1331,9 @@ function updateWaitingCount() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// RESULT TABS
-// ─────────────────────────────────────────────────────────────
-let activeTab = 'votes';
-function switchTab(id) {
-  activeTab = id;
-  document.querySelectorAll('.res-tab').forEach((btn,i) => {
-    const tabs = ['votes','quadrant','roles'];
-    btn.classList.toggle('active', tabs[i] === id);
-  });
-  ['votes','quadrant','roles'].forEach(t => {
-    document.getElementById(`tab-${t}`).classList.toggle('active', t === id);
-  });
-  // Render quadrant lazily on first switch (chart needs visible canvas)
-  if (id === 'quadrant') renderQuadrant();
-}
-
-// ─────────────────────────────────────────────────────────────
 // RESULTS
 // ─────────────────────────────────────────────────────────────
 let chart = null;
-let qChart = null;
 
 function showResults() {
   showView('view-results');
@@ -1272,159 +1361,6 @@ function renderResults() {
   renderChart(ranked);
   renderRanked(ranked, mat);
   renderRoleTable(ranked, voters);
-  if (activeTab === 'quadrant') renderQuadrant();
-  else if (qChart) { qChart.destroy(); qChart = null; } // force rebuild next open
-}
-
-function renderQuadrant() {
-  const votes   = allVotes();
-  const voters  = Object.values(votes);
-  const tshirt  = tshirtSizes();
-  const totals  = new Array(USE_CASES.length).fill(0);
-  voters.forEach(v => USE_CASES.forEach((_,i) => { totals[i] += (v[i]||0); }));
-
-  const sizeX = {S:1, M:2, L:3, XL:4};
-  const maxVotes = Math.max(...totals, 1);
-
-  // One dataset per point so we can label each dot differently
-  const points = USE_CASES.map((name,i) => ({
-    x: sizeX[tshirt[i]] || 0,
-    y: totals[i],
-    name,
-    ts: tshirt[i] || null,
-  }));
-
-  const midX = 2.5; // between M and L
-  const midY = maxVotes / 2;
-
-  // Quadrant background plugin
-  const quadrantPlugin = {
-    id: 'quadrants',
-    beforeDraw(chart) {
-      const {ctx, chartArea:{left,right,top,bottom}, scales:{x,y}} = chart;
-      const cx = x.getPixelForValue(midX);
-      const cy = y.getPixelForValue(midY);
-      const quads = [
-        {x:left,  y:top,    w:cx-left,    h:cy-top,    fill:'rgba(34,197,94,.06)',  label:'Quick Wins',        lx:left+(cx-left)*.5,  ly:top+18},
-        {x:cx,    y:top,    w:right-cx,   h:cy-top,    fill:'rgba(255,184,28,.06)', label:'Big Bets',          lx:cx+(right-cx)*.5,   ly:top+18},
-        {x:left,  y:cy,     w:cx-left,    h:bottom-cy, fill:'rgba(255,255,255,.03)',label:'Low Priority',      lx:left+(cx-left)*.5,  ly:cy+18},
-        {x:cx,    y:cy,     w:right-cx,   h:bottom-cy, fill:'rgba(239,68,68,.06)',  label:'High Effort / Low Value', lx:cx+(right-cx)*.5, ly:cy+18},
-      ];
-      quads.forEach(q => {
-        ctx.save();
-        ctx.fillStyle = q.fill;
-        ctx.fillRect(q.x,q.y,q.w,q.h);
-        ctx.fillStyle = 'rgba(255,255,255,.22)';
-        ctx.font = '600 10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(q.label.toUpperCase(), q.lx, q.ly);
-        ctx.restore();
-      });
-      // Divider lines
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,.12)';
-      ctx.setLineDash([5,4]);
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(cx,top); ctx.lineTo(cx,bottom); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(left,cy); ctx.lineTo(right,cy); ctx.stroke();
-      ctx.restore();
-    }
-  };
-
-  // Label plugin — draws initiative name next to each dot
-  const labelPlugin = {
-    id: 'dotLabels',
-    afterDatasetsDraw(chart) {
-      const {ctx, scales:{x,y}} = chart;
-      chart.data.datasets.forEach((ds, di) => {
-        const pt = ds.data[0];
-        const px = x.getPixelForValue(pt.x);
-        const py = y.getPixelForValue(pt.y);
-        ctx.save();
-        ctx.font = '500 10px Inter, sans-serif';
-        ctx.fillStyle = 'rgba(255,255,255,.82)';
-        ctx.textAlign = 'left';
-        // Short label — first two words
-        const short = pt.name.replace(/^"/, '').split(' ').slice(0,3).join(' ');
-        ctx.fillText(short, px + 9, py + 4);
-        ctx.restore();
-      });
-    }
-  };
-
-  const ctx = document.getElementById('quadrant-chart').getContext('2d');
-  if (qChart) qChart.destroy();
-
-  qChart = new Chart(ctx, {
-    type: 'scatter',
-    plugins: [quadrantPlugin, labelPlugin],
-    data: {
-      datasets: points.map((pt, i) => ({
-        label: pt.name,
-        data: [pt],
-        pointRadius: 9,
-        pointHoverRadius: 12,
-        backgroundColor: pt.y === Math.max(...totals) ? '#FFB81C'
-          : pt.ts ? 'rgba(255,184,28,.55)' : 'rgba(255,255,255,.3)',
-        borderColor: pt.y === Math.max(...totals) ? '#FFB81C' : 'rgba(255,255,255,.4)',
-        borderWidth: 1.5,
-      }))
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 600 },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            title: items => items[0].dataset.label,
-            label: item => {
-              const pt = item.raw;
-              const sz = pt.ts || 'No size set';
-              return [`${pt.y} vote${pt.y!==1?'s':''}`, `Effort: ${sz}`];
-            }
-          },
-          backgroundColor: '#001A52',
-          borderColor: 'rgba(255,184,28,.4)',
-          borderWidth: 1,
-          titleColor: '#FFB81C',
-          bodyColor: 'rgba(255,255,255,.8)',
-          padding: 10,
-        }
-      },
-      scales: {
-        x: {
-          type: 'linear',
-          min: -0.3, max: 4.7,
-          grid: { color: 'rgba(255,255,255,.06)' },
-          ticks: {
-            color: 'rgba(255,255,255,.5)',
-            font: { size: 11 },
-            callback: v => ({0:'—', 1:'S', 2:'M', 3:'L', 4:'XL'}[v] ?? ''),
-            stepSize: 1,
-          },
-          title: {
-            display: true,
-            text: '← Lower Effort        Higher Effort →',
-            color: 'rgba(255,255,255,.4)',
-            font: { size: 11 }
-          }
-        },
-        y: {
-          min: -0.3,
-          grid: { color: 'rgba(255,255,255,.06)' },
-          ticks: { color: 'rgba(255,255,255,.5)', font: { size: 11 }, stepSize: 1 },
-          title: {
-            display: true,
-            text: 'Votes (Impact signal)',
-            color: 'rgba(255,255,255,.4)',
-            font: { size: 11 }
-          }
-        }
-      }
-    }
-  });
 }
 
 function renderChart(ranked) {
@@ -1469,21 +1405,37 @@ function renderChart(ranked) {
 }
 
 function renderRanked(ranked, mat) {
-  const medals = ['🥇','🥈','🥉'];
-  const cls    = ['top1','top2','top3'];
+  const medals  = ['🥇','🥈','🥉'];
+  const cls     = ['top1','top2','top3'];
+  const voters  = Object.values(allVotes());
   document.getElementById('ranked-list').innerHTML = ranked.map((uc,rank) => {
     const kpis = DRIVERS
       .filter((_,di) => mat[di] && mat[di][uc.i])
       .map(d => `<span class="kpi-tag">${d}</span>`).join('');
+
+    // Tier counts
+    const counts = {must:0,high:0,strategic:0};
+    voters.forEach(v => { if (v[`t${uc.i}`]) counts[v[`t${uc.i}`]]++; });
+    const tierDist = TIERS.filter(t=>counts[t.id]>0)
+      .map(t=>`<span class="tier-pill ${t.cls}">${t.label} <strong>${counts[t.id]}</strong></span>`)
+      .join('');
+
+    const ct = consensusTier(uc.i, voters);
+    const ctCfg = ct ? tierCfg(ct) : null;
+    const finalTier = ctCfg
+      ? `<span class="tier-final-badge ${ctCfg.cls}">${ctCfg.label}</span>` : '';
+
     return `
       <div class="ranked-card ${cls[rank]||''}">
         <div class="rank-num">${rank<3?medals[rank]:rank+1}</div>
         <div class="ranked-body">
           <div class="ranked-name">${uc.name}</div>
           <div class="kpi-tags">${kpis||'<span style="font-size:.65rem;color:rgba(255,255,255,.3)">No KPI mapped</span>'}</div>
-          <div class="ranked-footer">
+          ${tierDist ? `<div class="tier-dist">${tierDist}</div>` : ''}
+          <div class="ranked-footer" style="margin-top:.35rem">
             <span class="res-vote-count">${uc.votes} vote${uc.votes!==1?'s':''}</span>
             ${uc.ts?`<span class="tshirt-badge">${uc.ts}</span>`:''}
+            ${finalTier}
           </div>
         </div>
       </div>`;
@@ -1537,7 +1489,14 @@ function checkPw() {
     hideFacLogin(); openFac();
   } else { document.getElementById('pw-error').hidden = false; }
 }
-function openFac() { syncFacPanel(); document.getElementById('fac-overlay').hidden = false; }
+function openFac() {
+  sessionStorage.setItem('w360_fac','1');
+  // Show fac note if currently on voting view
+  const vn = document.getElementById('fac-voting-note');
+  if (vn) vn.hidden = false;
+  syncFacPanel();
+  document.getElementById('fac-overlay').hidden = false;
+}
 function closeFac() { document.getElementById('fac-overlay').hidden = true; }
 function closeFacIfBg(e) { if (e.target===document.getElementById('fac-overlay')) closeFac(); }
 
@@ -1545,7 +1504,9 @@ function syncFacPanel() {
   document.getElementById('fac-date').value = workshopDate();
   syncRevealBtn();
   renderTshirtRows();
+  renderTierOverrideRows();
   renderMatrix();
+  syncTimerDisplay();
 }
 
 function renderTshirtRows() {
@@ -1634,6 +1595,97 @@ function saveDate() {
     save({workshopDate:v});
     if (!document.getElementById('view-results').hidden) renderResults();
   }
+}
+
+function renderTierOverrideRows() {
+  const ov  = tierOverrides();
+  const el  = document.getElementById('tier-override-rows');
+  el.innerHTML = '';
+  USE_CASES.forEach((uc, i) => {
+    const cur = ov[i] || '';
+    const row = document.createElement('div');
+    row.className = 'fac-row';
+    row.style.cssText = 'gap:.25rem;flex-wrap:nowrap';
+
+    const lbl = document.createElement('span');
+    lbl.className = 'fac-label';
+    lbl.style.cssText = 'font-size:.75rem;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    lbl.title = uc;
+    lbl.textContent = uc;
+    row.appendChild(lbl);
+
+    TIERS.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-tier' + (cur===t.id ? ' sel-'+t.id : '');
+      btn.style.cssText = 'flex:0 0 auto;padding:.28rem .45rem;font-size:.6rem';
+      btn.textContent = t.label;
+      btn.onclick = () => saveTierOverride(i, t.id);
+      row.appendChild(btn);
+    });
+    if (cur) {
+      const clr = document.createElement('button');
+      clr.className = 'btn-tier';
+      clr.style.cssText = 'flex:0 0 auto;padding:.28rem .38rem;font-size:.6rem';
+      clr.textContent = '✕';
+      clr.onclick = () => saveTierOverride(i, '');
+      row.appendChild(clr);
+    }
+    el.appendChild(row);
+  });
+}
+
+function saveTierOverride(i, val) {
+  const ov = tierOverrides();
+  if (val) ov[i] = val; else delete ov[i];
+  save({tierOverrides: ov});
+  renderTierOverrideRows();
+  if (!document.getElementById('view-results').hidden) renderResults();
+}
+
+// ─────────────────────────────────────────────────────────────
+// COUNTDOWN TIMER
+// ─────────────────────────────────────────────────────────────
+let timerSecs   = 25 * 60;
+let timerActive = false;
+let timerIval   = null;
+let timerPhase  = 'Voting phase opens at 0:25';
+
+function timerReset(mins, phase) {
+  timerPause();
+  timerSecs  = mins * 60;
+  timerPhase = phase;
+  syncTimerDisplay();
+}
+
+function timerStart() {
+  if (timerActive) return;
+  timerActive = true;
+  document.getElementById('tbtn-start').classList.add('active');
+  document.getElementById('tbtn-pause').disabled = false;
+  timerIval = setInterval(() => {
+    if (timerSecs > 0) { timerSecs--; syncTimerDisplay(); }
+    else { timerPause(); }
+  }, 1000);
+}
+
+function timerPause() {
+  timerActive = false;
+  clearInterval(timerIval);
+  const s = document.getElementById('tbtn-start');
+  const p = document.getElementById('tbtn-pause');
+  if (s) s.classList.remove('active');
+  if (p) p.disabled = true;
+}
+
+function syncTimerDisplay() {
+  const el = document.getElementById('timer-display');
+  const pl = document.getElementById('timer-phase-label');
+  if (!el) return;
+  const m = String(Math.floor(timerSecs/60)).padStart(2,'0');
+  const s = String(timerSecs%60).padStart(2,'0');
+  el.textContent = m + ':' + s;
+  el.classList.toggle('urgent', timerSecs <= 60 && timerActive);
+  if (pl) pl.textContent = timerPhase;
 }
 
 // ─────────────────────────────────────────────────────────────
