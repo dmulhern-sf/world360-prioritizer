@@ -1064,7 +1064,7 @@ const MAX_PER_UC   = 2;
 
 // ── Google Sheets backend ─────────────────────────────────
 // Paste your deployed Apps Script URL here after setup:
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwdjhVUPC70Gnee_0_KH0489_ue5Y3zWWVmkTXCofuNnrO71s2UXG9I8V9slOZ-OOkuig/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxdKKyug7uhQlkr1j2DyTgol__mtZDGAfW0VhUEaT6J_f05KrSuubVMcAYdwREtD_rwTg/exec';
 
 const USE_CASES = [
   'Partner Linking',
@@ -1463,8 +1463,6 @@ function submitVotes() {
     fetch(SHEET_URL, {
       method: 'POST',
       mode: 'no-cors',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(entry),
     }).catch(() => {}); // silent — local cache is the fallback
   }
@@ -1489,7 +1487,7 @@ let _pollTimer = null;
 async function fetchRemoteVotes() {
   if (!SHEET_URL) return;
   try {
-    const res  = await fetch(SHEET_URL + '?action=getVotes', { credentials: 'include' });
+    const res  = await fetch(SHEET_URL + '?action=getVotes');
     const rows = await res.json(); // [{_name,_role,0:v,...,t0:tier,...}, ...]
     const votes = allVotes();
     let changed = false;
