@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World360 Rewards — FY27 Initiative Prioritizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── TOKENS ───────────────────────────────────────────────── */
+:root {
+  --navy:      #003087;
+  --navy-deep: #001A52;
+  --navy-mid:  #002266;
+  --gold:      #FFB81C;
+  --gold-dim:  rgba(255,184,28,.18);
+  --gold-glow: 0 0 24px rgba(255,184,28,.45);
+  --white:     #FFFFFF;
+  --text:      rgba(255,255,255,.92);
+  --text-muted:rgba(255,255,255,.52);
+  --border:    rgba(255,255,255,.1);
+  --border-gold: rgba(255,184,28,.35);
+  --card-bg:   #001A52;
+  --card-hover:#002070;
+  --shadow:    0 8px 32px rgba(0,0,0,.35);
+  --shadow-gold: 0 0 0 2px var(--gold), 0 8px 32px rgba(255,184,28,.3);
+  --r-card:    14px;
+  --r-btn:     8px;
+  --r-pill:    999px;
+  --max-w:     1200px;
+}
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  font-size:15px;line-height:1.6;
+  color:var(--text);
+  background:var(--navy-deep);
+  overflow-x:hidden;min-height:100vh;
+}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+.nav{
+  background:rgba(0,26,82,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+  position:sticky;top:0;z-index:100;
+  height:62px;
+}
+.nav-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;margin-right:auto}
+.nav-logo img{height:32px;width:auto;filter:brightness(0) invert(1)}
+.nav-divider{width:1px;height:20px;background:var(--border)}
+.nav-subtitle{
+  font-size:.68rem;font-weight:600;
+  color:var(--text-muted);
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap
+}
+.nav-voter-badge{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--gold-dim);
+  border:1px solid var(--border-gold);
+  border-radius:var(--r-pill);
+  padding:.28rem .75rem;
+  font-size:.72rem;font-weight:600;color:var(--gold)
+}
+.nav-voter-badge .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold);flex-shrink:0
+}
+.nav-btn{
+  background:var(--gold);color:var(--navy-deep);
+  border:none;padding:.4rem 1rem;
+  border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;
+  font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:filter .2s,transform .2s;
+  white-space:nowrap
+}
+.nav-btn:hover{filter:brightness(1.08);transform:scale(1.02)}
+
+/* ── VIEWS ───────────────────────────────────────────────── */
+.view{min-height:calc(100vh - 62px);display:flex;flex-direction:column}
+
+/* ── LANDING ─────────────────────────────────────────────── */
+#view-landing{
+  background:linear-gradient(145deg,#001A52 0%,#003087 50%,#004B8D 100%);
+  align-items:center;justify-content:center;padding:2.5rem 1.25rem;
+  position:relative;overflow:hidden
+}
+#view-landing::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 30%,rgba(255,184,28,.08) 0%,transparent 60%),
+             radial-gradient(ellipse at 20% 80%,rgba(0,48,135,.6) 0%,transparent 50%);
+  pointer-events:none
+}
+.landing-inner{position:relative;z-index:1;width:100%;max-width:900px}
+.landing-hero{text-align:center;margin-bottom:2.5rem}
+.landing-logo{margin-bottom:1.25rem}
+.landing-logo img{height:48px;width:auto;filter:brightness(0) invert(1)}
+.landing-eyebrow{
+  font-size:.68rem;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.75rem
+}
+.landing-title{
+  font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;
+  color:var(--white);letter-spacing:-.03em;line-height:1.1;margin-bottom:.65rem
+}
+.landing-tagline{
+  font-size:clamp(.85rem,1.8vw,1rem);
+  color:var(--text-muted);margin-bottom:2rem
+}
+.landing-rule{
+  width:48px;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  margin:0 auto 2rem
+}
+.landing-card{
+  background:rgba(0,34,102,.7);
+  border:1px solid var(--border);
+  border-radius:var(--r-card);
+  padding:2.25rem 2rem;
+  max-width:420px;width:100%;
+  margin:0 auto;
+  backdrop-filter:blur(12px);
+  box-shadow:var(--shadow)
+}
+.landing-card-title{
+  font-size:.75rem;font-weight:700;
+  color:var(--gold);letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:1.5rem;text-align:center
+}
+.form-group{margin-bottom:1.1rem}
+.form-label{
+  display:block;font-size:.68rem;font-weight:700;
+  color:var(--text-muted);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:.45rem
+}
+.form-input,.form-select{
+  width:100%;padding:.65rem .9rem;
+  background:rgba(255,255,255,.07);
+  border:1px solid var(--border);
+  border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;font-size:.9rem;
+  color:var(--white);outline:none;
+  transition:border-color .2s,background .2s;
+  -webkit-appearance:none;appearance:none
+}
+.form-input::placeholder{color:rgba(255,255,255,.3)}
+.form-input:focus,.form-select:focus{
+  border-color:var(--gold);
+  background:rgba(255,255,255,.1)
+}
+.form-select option{background:#002266;color:#fff}
+.btn-primary{
+  width:100%;background:var(--gold);color:var(--navy-deep);
+  border:none;padding:.8rem;
+  border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;
+  font-size:.95rem;font-weight:800;
+  cursor:pointer;transition:filter .2s,transform .2s;
+  margin-top:.5rem;letter-spacing:.01em
+}
+.btn-primary:hover{filter:brightness(1.08);transform:scale(1.02)}
+
+/* ── VOTING HEADER ───────────────────────────────────────── */
+#view-voting{
+  background:var(--navy-deep);
+  padding:0;align-items:stretch
+}
+.vote-hero{
+  background:linear-gradient(135deg,#001A52 0%,#003087 100%);
+  border-bottom:1px solid var(--border);
+  padding:1.5rem 1.75rem;
+  position:relative;overflow:hidden
+}
+.vote-hero::after{
+  content:'';position:absolute;
+  top:-40px;right:-40px;width:220px;height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,184,28,.12) 0%,transparent 70%);
+  pointer-events:none
+}
+.vote-hero-inner{
+  max-width:var(--max-w);margin:0 auto;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap
+}
+.vote-hero-text{flex:1;min-width:0}
+.vote-hero-q{
+  font-size:.68rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.25rem
+}
+.vote-hero-title{
+  font-size:clamp(1rem,2.5vw,1.3rem);font-weight:800;
+  color:var(--white);letter-spacing:-.02em
+}
+.vote-hero-sub{
+  font-size:.78rem;color:var(--text-muted);margin-top:.2rem
+}
+.vote-counter-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  background:rgba(255,184,28,.1);
+  border:2px solid var(--border-gold);
+  border-radius:14px;padding:.9rem 1.4rem;
+  min-width:120px;text-align:center;flex-shrink:0
+}
+.vote-counter-num{
+  font-size:2.4rem;font-weight:800;
+  color:var(--gold);line-height:1;
+  transition:transform .15s
+}
+.vote-counter-num.bump{transform:scale(1.25)}
+.vote-counter-label{
+  font-size:.65rem;font-weight:700;
+  color:var(--text-muted);letter-spacing:.1em;
+  text-transform:uppercase;margin-top:.2rem
+}
+.vote-counter-wrap.done{
+  background:rgba(34,197,94,.12);
+  border-color:rgba(34,197,94,.4)
+}
+.vote-counter-wrap.done .vote-counter-num{color:#4ade80}
+.voter-pill{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--gold-dim);border:1px solid var(--border-gold);
+  border-radius:var(--r-pill);
+  padding:.3rem .85rem;font-size:.75rem;font-weight:600;color:var(--gold)
+}
+
+/* ── VOTE GRID ───────────────────────────────────────────── */
+.vote-body{
+  max-width:var(--max-w);margin:0 auto;
+  width:100%;padding:1.5rem 1.75rem;flex:1;
+  display:flex;flex-direction:column
+}
+.vote-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;flex:1
+}
+@media(max-width:960px){.vote-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:660px){.vote-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* VOTE CARD */
+.vote-card{
+  background:var(--card-bg);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r-card);
+  padding:1.25rem;
+  display:flex;flex-direction:column;gap:.8rem;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:border-color .2s,background .2s,transform .2s,box-shadow .2s
+}
+.vote-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,184,28,.08) 0%,transparent 60%);
+  opacity:0;transition:opacity .2s;pointer-events:none
+}
+.vote-card:hover{
+  border-color:var(--border-gold);
+  background:var(--card-hover);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4)
+}
+.vote-card:hover::before{opacity:1}
+.vote-card.has-votes{
+  border-color:rgba(255,184,28,.5);
+  background:#001f6b
+}
+.vote-card.has-votes::before{opacity:1}
+.vote-card.maxed{
+  border-color:var(--gold);
+  box-shadow:var(--shadow-gold)
+}
+@keyframes goldPulse{
+  0%{box-shadow:0 0 0 0 rgba(255,184,28,.5)}
+  60%{box-shadow:0 0 0 14px rgba(255,184,28,0)}
+  100%{box-shadow:var(--shadow-gold)}
+}
+.vote-card.glow-anim{animation:goldPulse .45s ease-out forwards}
+
+.vc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.vc-name{
+  font-size:.92rem;font-weight:700;
+  color:var(--white);line-height:1.3;flex:1
+}
+.vc-tshirt{
+  background:var(--gold);color:var(--navy-deep);
+  font-size:.6rem;font-weight:800;
+  padding:.18rem .45rem;border-radius:var(--r-pill);
+  flex-shrink:0;letter-spacing:.04em
+}
+.vc-desc{
+  font-size:.72rem;color:var(--text-muted);
+  line-height:1.45;flex:1
+}
+.vc-kpis{
+  display:flex;flex-wrap:wrap;gap:.3rem
+}
+.vc-kpi-pill{
+  background:rgba(255,184,28,.12);
+  border:1px solid rgba(255,184,28,.25);
+  color:var(--gold);
+  font-size:.6rem;font-weight:600;
+  padding:.16rem .5rem;border-radius:var(--r-pill);
+  letter-spacing:.02em
+}
+.vc-progress{
+  height:4px;background:rgba(255,255,255,.08);
+  border-radius:var(--r-pill);overflow:hidden
+}
+.vc-progress-bar{
+  height:100%;background:var(--gold);
+  border-radius:var(--r-pill);
+  transition:width .25s ease
+}
+.vc-stepper{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.5rem;margin-top:auto
+}
+.btn-step{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(255,184,28,.5);
+  background:rgba(255,184,28,.08);
+  color:var(--gold);font-size:1.05rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;
+  font-family:'Inter',sans-serif
+}
+.btn-step:hover:not(:disabled){
+  background:var(--gold);color:var(--navy-deep);
+  border-color:var(--gold)
+}
+.btn-step:disabled{
+  border-color:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.2);
+  background:transparent;cursor:not-allowed
+}
+.vc-vote-count{
+  font-size:1.15rem;font-weight:800;
+  color:var(--gold);min-width:28px;text-align:center
+}
+.vc-max-hint{
+  font-size:.6rem;color:rgba(255,184,28,.6);
+  text-align:center;letter-spacing:.04em
+}
+
+/* SUBMIT AREA */
+.vote-submit-area{
+  padding:1.25rem 0 2rem;
+  display:flex;align-items:center;
+  justify-content:center;gap:1.25rem;flex-wrap:wrap
+}
+.btn-submit{
+  background:var(--gold);color:var(--navy-deep);
+  border:none;padding:.8rem 2.5rem;
+  border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;
+  font-size:.95rem;font-weight:800;
+  cursor:pointer;transition:filter .2s,transform .2s;
+  letter-spacing:.01em
+}
+.btn-submit:hover:not(:disabled){filter:brightness(1.08);transform:scale(1.02)}
+.btn-submit:disabled{
+  background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.3);cursor:not-allowed
+}
+.vote-hint{font-size:.75rem;color:var(--text-muted)}
+
+/* ── WAITING ─────────────────────────────────────────────── */
+#view-waiting{
+  background:linear-gradient(145deg,#001A52,#003087);
+  align-items:center;justify-content:center;padding:3rem 1.25rem
+}
+.waiting-card{
+  background:rgba(0,34,102,.8);
+  border:1px solid var(--border-gold);
+  border-radius:var(--r-card);
+  padding:3rem 2.25rem;
+  max-width:420px;width:100%;
+  box-shadow:var(--shadow),var(--gold-glow);
+  text-align:center
+}
+.waiting-icon{font-size:3rem;margin-bottom:1rem}
+.waiting-title{
+  font-size:1.5rem;font-weight:800;
+  color:var(--white);letter-spacing:-.025em;margin-bottom:.5rem
+}
+.waiting-sub{font-size:.85rem;color:var(--text-muted);line-height:1.6}
+.wait-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--gold-dim);border:1px solid var(--border-gold);
+  border-radius:var(--r-pill);
+  padding:.45rem 1.25rem;font-size:.85rem;font-weight:700;
+  color:var(--gold);margin-top:1.5rem
+}
+
+/* ── RESULTS ─────────────────────────────────────────────── */
+#view-results{
+  background:var(--navy-deep);
+  padding:1.75rem 1.5rem;align-items:stretch
+}
+.results-inner{max-width:var(--max-w);margin:0 auto;width:100%}
+.results-banner{
+  background:linear-gradient(135deg,#001A52,#003087);
+  border:1px solid var(--border-gold);
+  border-radius:var(--r-card);
+  padding:1.6rem 2rem;margin-bottom:1.75rem;
+  display:flex;align-items:flex-start;
+  justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  box-shadow:var(--shadow)
+}
+.rb-eyebrow{
+  font-size:.62rem;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.4rem
+}
+.rb-title{
+  font-size:1.35rem;font-weight:800;
+  color:var(--white);letter-spacing:-.025em
+}
+.rb-date{font-size:.78rem;color:var(--text-muted);margin-top:.25rem}
+.rb-meta{font-size:.78rem;color:var(--text-muted);text-align:right}
+.results-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-bottom:1.5rem
+}
+@media(max-width:768px){.results-layout{grid-template-columns:1fr}}
+.panel{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:1.5rem;
+  box-shadow:var(--shadow)
+}
+.panel-title{
+  font-size:.65rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:1rem
+}
+.panel canvas{max-height:380px}
+
+/* RANKED LIST */
+.ranked-list{display:flex;flex-direction:column;gap:.65rem}
+.ranked-card{
+  border:1px solid var(--border);border-radius:12px;
+  padding:.85rem 1rem;display:flex;align-items:flex-start;gap:.85rem;
+  background:rgba(255,255,255,.03);transition:transform .15s
+}
+.ranked-card:hover{transform:translateX(4px)}
+.ranked-card.top1{border-color:rgba(255,184,28,.6);background:rgba(255,184,28,.06)}
+.ranked-card.top2{border-color:rgba(192,192,192,.45);background:rgba(192,192,192,.04)}
+.ranked-card.top3{border-color:rgba(200,134,78,.45);background:rgba(200,134,78,.04)}
+.rank-num{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:800;color:var(--text-muted);
+  flex-shrink:0
+}
+.top1 .rank-num,.top2 .rank-num,.top3 .rank-num{
+  background:transparent;font-size:1.4rem
+}
+.ranked-body{flex:1;min-width:0}
+.ranked-name{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+.kpi-tags{display:flex;flex-wrap:wrap;gap:.25rem;margin-bottom:.35rem}
+.kpi-tag{
+  background:rgba(255,184,28,.12);border:1px solid rgba(255,184,28,.25);
+  color:var(--gold);font-size:.62rem;font-weight:600;
+  padding:.16rem .48rem;border-radius:var(--r-pill)
+}
+.ranked-footer{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.res-vote-count{font-size:.8rem;font-weight:700;color:var(--gold)}
+.tshirt-badge{
+  background:var(--gold);color:var(--navy-deep);
+  font-size:.62rem;font-weight:800;
+  padding:.14rem .48rem;border-radius:var(--r-pill)
+}
+
+/* ROLE TABLE */
+.role-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.role-table th{
+  background:rgba(255,255,255,.05);color:var(--gold);
+  font-weight:700;padding:.55rem .75rem;text-align:left;
+  font-size:.63rem;letter-spacing:.08em;text-transform:uppercase
+}
+.role-table td{
+  padding:.45rem .75rem;border-bottom:1px solid rgba(255,255,255,.06);
+  color:var(--text)
+}
+.role-table tr:last-child td{border-bottom:none}
+.role-bar-wrap{
+  background:rgba(255,255,255,.07);border-radius:var(--r-pill);
+  height:7px;overflow:hidden;min-width:60px
+}
+.role-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--navy),var(--gold));
+  border-radius:var(--r-pill);transition:width .6s ease
+}
+
+/* ── RESULT TABS ─────────────────────────────────────────── */
+.res-tabs{
+  display:flex;gap:.35rem;margin-bottom:1.25rem;
+  border-bottom:1px solid var(--border);padding-bottom:0
+}
+.res-tab{
+  background:transparent;border:none;
+  color:var(--text-muted);font-family:'Inter',sans-serif;
+  font-size:.78rem;font-weight:600;
+  padding:.6rem 1.1rem;cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+  letter-spacing:.02em
+}
+.res-tab:hover{color:var(--white)}
+.res-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-panel{display:none}
+.tab-panel.active{display:contents}
+.tab-panel-block{display:none}
+.tab-panel-block.active{display:block}
+
+/* quadrant chart container needs fixed height */
+#quadrant-wrap{position:relative;height:420px}
+#quadrant-wrap canvas{position:absolute;inset:0}
+
+/* ── FAC LOGIN ───────────────────────────────────────────── */
+#fac-login{
+  position:fixed;inset:0;
+  background:rgba(0,10,40,.75);
+  backdrop-filter:blur(8px);
+  z-index:300;display:flex;
+  align-items:center;justify-content:center;padding:1rem
+}
+.login-card{
+  background:#001A52;border:1px solid var(--border-gold);
+  border-radius:var(--r-card);padding:2.25rem;
+  max-width:320px;width:100%;box-shadow:var(--shadow),var(--gold-glow)
+}
+.login-title{
+  font-size:1rem;font-weight:800;
+  color:var(--white);margin-bottom:1rem
+}
+.login-error{color:#f87171;font-size:.76rem;margin-bottom:.6rem}
+.login-btns{display:flex;gap:.65rem;margin-top:.85rem}
+.btn-outline{
+  flex:1;background:rgba(255,255,255,.07);
+  color:var(--text);border:1px solid var(--border);
+  padding:.65rem;border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;
+  cursor:pointer;transition:background .2s
+}
+.btn-outline:hover{background:rgba(255,255,255,.13)}
+
+/* ── FAC OVERLAY ─────────────────────────────────────────── */
+#fac-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,10,40,.6);
+  backdrop-filter:blur(6px);
+  z-index:200;display:flex;justify-content:flex-end
+}
+#fac-panel{
+  background:#001A52;
+  width:min(500px,96vw);height:100%;overflow-y:auto;
+  padding:1.5rem;
+  border-left:1px solid var(--border-gold);
+  box-shadow:-4px 0 48px rgba(0,0,0,.4)
+}
+.fac-header{display:flex;align-items:center;margin-bottom:1.5rem}
+.fac-title{font-size:.95rem;font-weight:800;color:var(--white);margin-right:auto}
+.btn-close{
+  background:none;border:none;font-size:1.3rem;
+  cursor:pointer;color:var(--text-muted);padding:.25rem;line-height:1
+}
+.btn-close:hover{color:var(--white)}
+.fac-section{margin-bottom:2rem}
+.fac-section-title{
+  font-size:.63rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid var(--border);
+  padding-bottom:.4rem;margin-bottom:.9rem
+}
+.fac-row{
+  display:flex;align-items:center;gap:.7rem;
+  margin-bottom:.6rem;flex-wrap:wrap
+}
+.fac-label{font-size:.82rem;font-weight:500;color:var(--text);flex:1;min-width:110px}
+.fac-btn{
+  background:var(--gold);color:var(--navy-deep);
+  border:none;padding:.42rem .9rem;border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;
+  cursor:pointer;transition:filter .2s;white-space:nowrap
+}
+.fac-btn:hover{filter:brightness(1.08)}
+.fac-btn.danger{background:#ef4444;color:#fff}
+.tshirt-select,.date-input{
+  padding:.35rem .6rem;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);border-radius:var(--r-btn);
+  font-family:'Inter',sans-serif;font-size:.8rem;color:var(--white);
+  outline:none;cursor:pointer;transition:border-color .2s
+}
+.tshirt-select option{background:#001A52}
+.date-input:focus,.tshirt-select:focus{border-color:var(--gold)}
+
+/* MATRIX TABLE */
+.matrix-wrap{overflow-x:auto;margin-top:.25rem}
+.matrix-table{border-collapse:collapse;font-size:.65rem;width:100%}
+.matrix-table th{
+  background:rgba(255,184,28,.15);color:var(--gold);
+  padding:.3rem .25rem;font-weight:600;
+  writing-mode:vertical-rl;text-orientation:mixed;
+  transform:rotate(180deg);height:85px;vertical-align:bottom;white-space:nowrap
+}
+.matrix-table th.driver-col{
+  writing-mode:horizontal-tb;transform:none;
+  height:auto;text-align:left;padding:.3rem .5rem;
+  width:115px;white-space:nowrap
+}
+.matrix-table td{
+  padding:.22rem .18rem;border:1px solid rgba(255,255,255,.06);
+  text-align:center;cursor:pointer;font-size:.9rem
+}
+.matrix-table td:hover{background:rgba(255,184,28,.1)}
+.matrix-table td.driver-label{
+  font-size:.7rem;font-weight:500;color:var(--text);
+  text-align:left;padding:.28rem .5rem;cursor:default;
+  background:rgba(255,255,255,.04);white-space:nowrap
+}
+.mc-on{color:var(--gold)}
+.mc-off{color:rgba(255,255,255,.2)}
+
+/* ── PRINT ───────────────────────────────────────────────── */
+@media print{
+  .nav,#fac-overlay,#fac-login,.vote-submit-area{display:none!important}
+  body{background:#fff;color:#111}
+  #view-results{background:#fff;padding:.5rem}
+  .results-banner,.panel,.ranked-card{
+    background:#fff!important;border:1px solid #ddd!important;
+    box-shadow:none!important;color:#111!important
+  }
+  .results-layout{grid-template-columns:1fr 1fr}
+  .rb-title,.ranked-name,.panel-title,.rb-eyebrow{color:#003087!important}
+  .kpi-tag,.vc-kpi-pill{background:#f0f4ff!important;color:#003087!important;border-color:#003087!important}
+  .res-vote-count{color:#003087!important}
+  .results-banner{-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    background:linear-gradient(135deg,#001A52,#003087)!important}
+  .rb-title,.rb-eyebrow,.rb-date,.rb-meta{color:#fff!important}
+}
+
+@media(max-width:560px){
+  .landing-card{padding:1.75rem 1.25rem}
+  .vote-hero{padding:1.1rem 1rem}
+  .vote-body{padding:1rem}
+}
+</style>
+
+<!-- PAGE LOCK — checked before any content renders -->
+<style>
+#page-lock{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(145deg,#001A52 0%,#003087 60%,#004B8D 100%);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem
+}
+#page-lock.unlocked{display:none}
+.lock-card{
+  background:rgba(0,34,102,.85);
+  border:1px solid rgba(255,184,28,.35);
+  border-radius:14px;
+  padding:2.5rem 2rem;
+  max-width:380px;width:100%;
+  box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 24px rgba(255,184,28,.12);
+  text-align:center
+}
+.lock-logo{margin-bottom:1.5rem}
+.lock-logo img{height:44px;width:auto;filter:brightness(0) invert(1)}
+.lock-title{
+  font-size:1.2rem;font-weight:800;color:#fff;
+  letter-spacing:-.025em;margin-bottom:.35rem
+}
+.lock-sub{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:1.75rem;line-height:1.55}
+.lock-input{
+  width:100%;padding:.7rem .9rem;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:1rem;
+  color:#fff;outline:none;text-align:center;
+  letter-spacing:.12em;
+  transition:border-color .2s
+}
+.lock-input:focus{border-color:#FFB81C}
+.lock-input::placeholder{letter-spacing:.04em;color:rgba(255,255,255,.3)}
+.lock-error{
+  color:#f87171;font-size:.76rem;
+  margin-top:.55rem;min-height:1rem
+}
+.lock-btn{
+  width:100%;margin-top:1rem;
+  background:#FFB81C;color:#001A52;
+  border:none;padding:.8rem;
+  border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:.95rem;font-weight:800;
+  cursor:pointer;transition:filter .2s,transform .2s
+}
+.lock-btn:hover{filter:brightness(1.08);transform:scale(1.02)}
+.lock-hint{font-size:.68rem;color:rgba(255,255,255,.3);margin-top:1.25rem}
+</style>
+</head>
+<body>
+
+<!-- ── PAGE LOCK ─────────────────────────────────────────── -->
+<div id="page-lock">
+  <div class="lock-card">
+    <div class="lock-logo">
+      <img src="https://content.world360rewards.com/sites/default/files/2025-10/world360_primary_logo.svg" alt="World360 Rewards">
+    </div>
+    <div class="lock-title">FY27 Roadmap Workshop</div>
+    <div class="lock-sub">This tool is for workshop participants only.<br>Enter the session passphrase to continue.</div>
+    <input class="lock-input" id="lock-pw" type="password" placeholder="Passphrase"
+      autocomplete="off" onkeydown="if(event.key==='Enter')checkLock()">
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" onclick="checkLock()">Enter Workshop →</button>
+    <div class="lock-hint">Shared by your facilitator before the session</div>
+  </div>
+</div>
+
+<script>
+// ── PAGE LOCK ── runs immediately, before the rest of the page is shown
+(function() {
+  const PAGE_PW = 'world360';
+  const SK = 'w360_unlocked';
+  function checkLock() {
+    const val = document.getElementById('lock-pw').value;
+    if (val === PAGE_PW) {
+      sessionStorage.setItem(SK, '1');
+      document.getElementById('page-lock').classList.add('unlocked');
+    } else {
+      const err = document.getElementById('lock-error');
+      err.textContent = 'Incorrect passphrase — try again.';
+      document.getElementById('lock-pw').value = '';
+      document.getElementById('lock-pw').focus();
+      setTimeout(() => { err.textContent = ''; }, 2500);
+    }
+  }
+  // Expose so the onclick can reach it
+  window.checkLock = checkLock;
+  // Already unlocked this session? Skip straight through.
+  if (sessionStorage.getItem(SK) === '1') {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('page-lock').classList.add('unlocked');
+    });
+  } else {
+    // Focus the input once fonts load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('lock-pw').focus();
+    });
+  }
+})();
+</script>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-logo" onclick="return false">
+    <img src="https://content.world360rewards.com/sites/default/files/2025-10/world360_primary_logo.svg" alt="World360 Rewards">
+  </a>
+  <div class="nav-divider"></div>
+  <span class="nav-subtitle">Flight Centre World360 · FY27 Roadmap Workshop</span>
+  <div id="nav-voter-badge" class="nav-voter-badge" hidden>
+    <div class="dot"></div>
+    <span id="nav-voter-name">—</span>
+  </div>
+  <div id="nav-vote-count" class="nav-voter-badge" hidden>
+    <span id="nav-vc-text">0 voted</span>
+  </div>
+  <button class="nav-btn" onclick="showFacLogin()">Facilitator</button>
+</nav>
+
+<!-- ── LANDING ──────────────────────────────────────────── -->
+<div id="view-landing" class="view">
+  <div class="landing-inner">
+    <div class="landing-hero">
+      <div class="landing-logo">
+        <img src="https://content.world360rewards.com/sites/default/files/2025-10/world360_primary_logo.svg" alt="World360 Rewards">
+      </div>
+      <div class="landing-eyebrow">FY27 Roadmap Workshop</div>
+      <div class="landing-title">Which initiatives should we<br>build first?</div>
+      <div class="landing-tagline">Travel is the Point(s) — help shape what gets built next.</div>
+      <div class="landing-rule"></div>
+    </div>
+    <div class="landing-card">
+      <div class="landing-card-title">Enter to vote</div>
+      <div class="form-group">
+        <label class="form-label" for="inp-name">Your Name</label>
+        <input class="form-input" id="inp-name" type="text" placeholder="e.g. Sarah Chen"
+          autocomplete="off" onkeydown="if(event.key==='Enter')startVoting()">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-role">Your Role</label>
+        <select class="form-select" id="inp-role"></select>
+      </div>
+      <button class="btn-primary" onclick="startVoting()">Start Voting →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── VOTING ───────────────────────────────────────────── -->
+<div id="view-voting" class="view" hidden>
+  <div class="vote-hero">
+    <div class="vote-hero-inner">
+      <div class="vote-hero-text">
+        <div class="vote-hero-q">Gut-feel prioritization</div>
+        <div class="vote-hero-title">Which initiatives will move the needle most?</div>
+        <div class="vote-hero-sub" id="vote-hero-sub">5 votes total · max 2 per initiative · no overthinking</div>
+      </div>
+      <div id="vote-counter-wrap" class="vote-counter-wrap">
+        <div class="vote-counter-num" id="vote-counter-num">5</div>
+        <div class="vote-counter-label">votes left</div>
+      </div>
+    </div>
+  </div>
+  <div class="vote-body">
+    <div class="vote-grid" id="vote-grid"></div>
+    <div class="vote-submit-area">
+      <button class="btn-submit" id="btn-submit" disabled onclick="submitVotes()">Submit My Votes →</button>
+      <div class="vote-hint" id="vote-hint">Allocate all 5 votes to enable submit</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WAITING ──────────────────────────────────────────── -->
+<div id="view-waiting" class="view" hidden>
+  <div class="waiting-card">
+    <div class="waiting-icon">⭐</div>
+    <div class="waiting-title">Votes Locked In</div>
+    <div class="waiting-sub">Your choices have been recorded.<br>The facilitator will reveal results when everyone is done.</div>
+    <div class="wait-badge" id="vote-count-badge">0 participants voted</div>
+  </div>
+</div>
+
+<!-- ── RESULTS ──────────────────────────────────────────── -->
+<div id="view-results" class="view" hidden>
+  <div class="results-inner">
+    <div class="results-banner">
+      <div>
+        <div class="rb-eyebrow">World360 Rewards · FY27 Roadmap</div>
+        <div class="rb-title">Provisional Priority View</div>
+        <div class="rb-date" id="results-date"></div>
+      </div>
+      <div class="rb-meta" id="results-meta"></div>
+    </div>
+    <!-- TAB BAR -->
+    <div class="res-tabs">
+      <button class="res-tab active" onclick="switchTab('votes')">Vote Totals</button>
+      <button class="res-tab" onclick="switchTab('quadrant')">Effort vs Impact</button>
+      <button class="res-tab" onclick="switchTab('roles')">By Role</button>
+    </div>
+
+    <!-- TAB: VOTES -->
+    <div id="tab-votes" class="tab-panel-block active">
+      <div class="results-layout">
+        <div class="panel">
+          <div class="panel-title">Vote Totals</div>
+          <canvas id="results-chart"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Ranked Initiatives</div>
+          <div class="ranked-list" id="ranked-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: QUADRANT -->
+    <div id="tab-quadrant" class="tab-panel-block">
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel-title">Effort vs Impact — where does each initiative sit?</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:1rem">
+          X-axis = estimated effort (T-shirt size set by facilitator) &nbsp;·&nbsp;
+          Y-axis = votes received &nbsp;·&nbsp;
+          Initiatives without a size are plotted at X = 0
+        </div>
+        <div id="quadrant-wrap"><canvas id="quadrant-chart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- TAB: ROLES -->
+    <div id="tab-roles" class="tab-panel-block">
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel-title">Breakdown by Stakeholder Role</div>
+        <div style="overflow-x:auto">
+          <table class="role-table" id="role-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding-bottom:3rem">
+      <button class="btn-submit" style="background:rgba(255,255,255,.1);color:var(--white)" onclick="window.print()">Print / Export PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FAC OVERLAY ───────────────────────────────────────── -->
+<div id="fac-overlay" hidden onclick="closeFacIfBg(event)">
+  <div id="fac-panel">
+    <div class="fac-header">
+      <div class="fac-title">🎛 Facilitator Controls</div>
+      <button class="btn-close" onclick="closeFac()">✕</button>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">Workshop Date</div>
+      <div class="fac-row">
+        <label class="fac-label" for="fac-date">Date shown on results</label>
+        <input class="date-input" type="date" id="fac-date" onchange="saveDate()">
+      </div>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">Results Visibility</div>
+      <div class="fac-row">
+        <span class="fac-label">Show results to all participants</span>
+        <button class="fac-btn" id="btn-reveal" onclick="toggleReveal()">Reveal Results</button>
+      </div>
+      <div class="fac-row">
+        <span class="fac-label" style="color:#f87171">Reset all votes</span>
+        <button class="fac-btn danger" onclick="resetVotes()">Reset Votes</button>
+      </div>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">T-Shirt Sizing (Effort / Cost)</div>
+      <div id="tshirt-rows"></div>
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">KPI → Initiative Mapping (click cell to toggle)</div>
+      <div class="matrix-wrap">
+        <table class="matrix-table" id="matrix-table"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FAC LOGIN ─────────────────────────────────────────── -->
+<div id="fac-login" hidden>
+  <div class="login-card">
+    <div class="login-title">🔐 Facilitator Access</div>
+    <input class="form-input" id="fac-pw" type="password" placeholder="Password"
+      style="margin-bottom:.65rem"
+      onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="login-error" id="pw-error" hidden>Incorrect password.</div>
+    <div class="login-btns">
+      <button class="btn-primary" style="margin:0;padding:.65rem" onclick="checkPw()">Enter</button>
+      <button class="btn-outline" onclick="hideFacLogin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// EDITABLE CONFIG
+// ─────────────────────────────────────────────────────────────
+const ROLES = [
+  'Product',
+  'Executive',
+  'Martech',
+  'Marketing',
+  'Loyalty CRM',
+  'Other',
+];
+
+const FAC_PASSWORD = 'world360';
+const TOTAL_VOTES  = 5;
+const MAX_PER_UC   = 2;
+
+const USE_CASES = [
+  'Partner Linking',
+  'AI-Driven Personalised Promotions',
+  '"Fastpass" Realtime Incentives',
+  'Paid Tier Exclusive Community',
+  'Scale Data360 Deployment',
+  'AI-Powered Adaptive Web',
+  'Retail Media Network',
+  'Referral Marketing',
+  'Ecom Integration',
+  'Authenticated Member Portal',
+];
+
+const UC_DESCS = [
+  'Link partner rewards to member profiles for cross-sell visibility',
+  'Serve AI-curated offers based on travel history and preferences',
+  'Unlock time-sensitive perks that expire within hours of booking',
+  'Premium community space exclusive to Member Plus tier subscribers',
+  'Expand Data360 to all brands — Flight Centre, TA, Cruiseabout',
+  'Personalise the web experience in real time for logged-in members',
+  'Monetise member data and audience segments for partner advertisers',
+  'Incentivise word-of-mouth with points rewards for new member referrals',
+  'Earn and redeem points natively across the Flight Centre ecom funnel',
+  'Unified logged-in portal for points balance, history, and rewards store',
+];
+
+const DRIVERS = [
+  'Member Growth',
+  'Cross Sell / Upsell Rates',
+  'Conversion Rates',
+  'Member Engagement',
+  'Member Advocacy',
+  'Partner Expansion',
+  'Acquisition Cost',
+  'Effort per Campaign',
+  'Analytics Costs',
+  'Service/Support Costs',
+  'Response Time',
+];
+
+const DEFAULT_MAP = {
+  0: [0],
+  1: [0],
+  2: [8],
+  3: [0, 9],
+  4: [0, 7],
+  5: [0],
+  6: [],
+  7: [],
+  8: [],
+  9: [0],
+  10: [],
+};
+
+// ─────────────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────────────
+const KEY = 'w360_prio';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+  catch(e) { return {}; }
+}
+function save(patch) {
+  const s = load(); Object.assign(s, patch);
+  localStorage.setItem(KEY, JSON.stringify(s));
+}
+function allVotes()     { return load().votes  || {}; }
+function tshirtSizes()  { return load().tshirt || {}; }
+function isRevealed()   { return !!load().revealed; }
+function workshopDate() { return load().workshopDate || new Date().toISOString().slice(0,10); }
+function matrix() {
+  const s = load();
+  if (s.matrix) return s.matrix;
+  const m = {};
+  DRIVERS.forEach((_,di) => {
+    m[di] = {};
+    USE_CASES.forEach((_,ui) => { m[di][ui] = (DEFAULT_MAP[di]||[]).includes(ui); });
+  });
+  return m;
+}
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let voter   = null;
+let myVotes = new Array(USE_CASES.length).fill(0);
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  populateRoles();
+  updateNavVoteCount();
+  if (isRevealed()) showResults();
+});
+
+window.addEventListener('storage', () => {
+  updateNavVoteCount();
+  const waiting = !document.getElementById('view-waiting').hidden;
+  if (waiting) {
+    updateWaitingCount();
+    if (isRevealed()) showResults();
+  }
+  if (!document.getElementById('view-results').hidden) renderResults();
+});
+
+function populateRoles() {
+  document.getElementById('inp-role').innerHTML =
+    ROLES.map(r => `<option value="${r}">${r}</option>`).join('');
+}
+
+function updateNavVoteCount() {
+  const n   = Object.keys(allVotes()).length;
+  const el  = document.getElementById('nav-vote-count');
+  const txt = document.getElementById('nav-vc-text');
+  if (n > 0) {
+    el.hidden = false;
+    txt.textContent = `${n} voted`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// VOTE FLOW
+// ─────────────────────────────────────────────────────────────
+function startVoting() {
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name) { document.getElementById('inp-name').focus(); return; }
+  voter   = { name, role: document.getElementById('inp-role').value };
+  myVotes = new Array(USE_CASES.length).fill(0);
+
+  // Show voter badge in nav
+  const badge = document.getElementById('nav-voter-badge');
+  document.getElementById('nav-voter-name').textContent = `${name} · ${voter.role}`;
+  badge.hidden = false;
+
+  showView('view-voting');
+  buildVoteGrid();
+  syncVoteUI();
+}
+
+function buildVoteGrid() {
+  const mat = matrix();
+  const ts  = tshirtSizes();
+  document.getElementById('vote-grid').innerHTML = USE_CASES.map((uc, i) => {
+    const kpis = DRIVERS
+      .filter((_,di) => mat[di] && mat[di][i])
+      .map(d => `<span class="vc-kpi-pill">${d}</span>`)
+      .join('');
+    const tsz = ts[i] ? `<span class="vc-tshirt">${ts[i]}</span>` : '';
+    return `
+    <div class="vote-card" id="vc-${i}">
+      <div class="vc-top">
+        <div class="vc-name">${uc}</div>
+        <div id="vc-tshirt-${i}">${tsz}</div>
+      </div>
+      <div class="vc-desc">${UC_DESCS[i]}</div>
+      <div class="vc-kpis" id="vc-kpis-${i}">${kpis}</div>
+      <div class="vc-progress">
+        <div class="vc-progress-bar" id="vc-bar-${i}" style="width:0%"></div>
+      </div>
+      <div class="vc-stepper">
+        <button class="btn-step" id="bminus-${i}"
+          onclick="bump(${i},-1)" disabled>−</button>
+        <div class="vc-vote-count" id="vc-count-${i}">0</div>
+        <button class="btn-step" id="bplus-${i}"
+          onclick="bump(${i},+1)">+</button>
+      </div>
+      <div class="vc-max-hint" id="vc-hint-${i}">max ${MAX_PER_UC}</div>
+    </div>`;
+  }).join('');
+}
+
+function bump(i, d) {
+  const rem = TOTAL_VOTES - myVotes.reduce((a,b)=>a+b,0);
+  const n   = myVotes[i] + d;
+  if (n < 0 || n > MAX_PER_UC) return;
+  if (d > 0 && rem <= 0) return;
+  myVotes[i] = n;
+  if (d > 0) triggerGlow(i);
+  syncVoteUI();
+}
+
+function triggerGlow(i) {
+  const card = document.getElementById(`vc-${i}`);
+  card.classList.remove('glow-anim');
+  void card.offsetWidth;
+  card.classList.add('glow-anim');
+}
+
+function syncVoteUI() {
+  const used  = myVotes.reduce((a,b)=>a+b,0);
+  const rem   = TOTAL_VOTES - used;
+  const done  = used === TOTAL_VOTES;
+
+  // Big counter
+  const numEl = document.getElementById('vote-counter-num');
+  const wrap  = document.getElementById('vote-counter-wrap');
+  numEl.textContent = done ? '✓' : rem;
+  numEl.classList.remove('bump');
+  void numEl.offsetWidth;
+  numEl.classList.add('bump');
+  setTimeout(() => numEl.classList.remove('bump'), 200);
+  wrap.classList.toggle('done', done);
+
+  // Sub
+  document.getElementById('vote-hero-sub').textContent = done
+    ? '✓ All votes placed — review and submit below'
+    : `${rem} vote${rem===1?'':' '}left · max ${MAX_PER_UC} per initiative`;
+
+  // Submit
+  const sub = document.getElementById('btn-submit');
+  sub.disabled = !done;
+  document.getElementById('vote-hint').textContent = done
+    ? 'Happy with your choices? Hit submit.'
+    : `Place all ${TOTAL_VOTES} votes to enable submit · Max ${MAX_PER_UC} per initiative`;
+
+  USE_CASES.forEach((_,i) => {
+    const v    = myVotes[i];
+    const card = document.getElementById(`vc-${i}`);
+    card.classList.toggle('has-votes', v > 0);
+    card.classList.toggle('maxed',     v >= MAX_PER_UC);
+    document.getElementById(`vc-count-${i}`).textContent = v;
+    document.getElementById(`vc-bar-${i}`).style.width   = `${(v/MAX_PER_UC)*100}%`;
+    document.getElementById(`bminus-${i}`).disabled      = v === 0;
+    document.getElementById(`bplus-${i}`).disabled       = v >= MAX_PER_UC || rem <= 0;
+    document.getElementById(`vc-hint-${i}`).textContent  =
+      v >= MAX_PER_UC ? '● maxed out' : `max ${MAX_PER_UC}`;
+  });
+}
+
+function submitVotes() {
+  if (!voter) return;
+  if (myVotes.reduce((a,b)=>a+b,0) < TOTAL_VOTES) return;
+  const votes  = allVotes();
+  const entry  = { _name: voter.name, _role: voter.role };
+  myVotes.forEach((v,i) => { if (v > 0) entry[i] = v; });
+  votes[voter.name] = entry;
+  save({ votes });
+  showView('view-waiting');
+  updateWaitingCount();
+  updateNavVoteCount();
+  if (isRevealed()) showResults();
+}
+
+function updateWaitingCount() {
+  const n  = Object.keys(allVotes()).length;
+  const el = document.getElementById('vote-count-badge');
+  if (el) el.textContent = `${n} participant${n!==1?'s':''} voted`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESULT TABS
+// ─────────────────────────────────────────────────────────────
+let activeTab = 'votes';
+function switchTab(id) {
+  activeTab = id;
+  document.querySelectorAll('.res-tab').forEach((btn,i) => {
+    const tabs = ['votes','quadrant','roles'];
+    btn.classList.toggle('active', tabs[i] === id);
+  });
+  ['votes','quadrant','roles'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === id);
+  });
+  // Render quadrant lazily on first switch (chart needs visible canvas)
+  if (id === 'quadrant') renderQuadrant();
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESULTS
+// ─────────────────────────────────────────────────────────────
+let chart = null;
+let qChart = null;
+
+function showResults() {
+  showView('view-results');
+  renderResults();
+}
+
+function renderResults() {
+  const votes   = allVotes();
+  const voters  = Object.values(votes);
+  const tshirt  = tshirtSizes();
+  const mat     = matrix();
+  const totals  = new Array(USE_CASES.length).fill(0);
+  voters.forEach(v => USE_CASES.forEach((_,i) => { totals[i] += (v[i]||0); }));
+
+  const d = new Date(workshopDate()+'T12:00:00');
+  document.getElementById('results-date').textContent =
+    d.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('results-meta').textContent =
+    `${voters.length} participant${voters.length!==1?'s':''} · ${totals.reduce((a,b)=>a+b,0)} votes cast`;
+
+  const ranked = USE_CASES
+    .map((name,i) => ({name,i,votes:totals[i],ts:tshirt[i]||null}))
+    .sort((a,b) => b.votes - a.votes);
+
+  renderChart(ranked);
+  renderRanked(ranked, mat);
+  renderRoleTable(ranked, voters);
+  if (activeTab === 'quadrant') renderQuadrant();
+  else if (qChart) { qChart.destroy(); qChart = null; } // force rebuild next open
+}
+
+function renderQuadrant() {
+  const votes   = allVotes();
+  const voters  = Object.values(votes);
+  const tshirt  = tshirtSizes();
+  const totals  = new Array(USE_CASES.length).fill(0);
+  voters.forEach(v => USE_CASES.forEach((_,i) => { totals[i] += (v[i]||0); }));
+
+  const sizeX = {S:1, M:2, L:3, XL:4};
+  const maxVotes = Math.max(...totals, 1);
+
+  // One dataset per point so we can label each dot differently
+  const points = USE_CASES.map((name,i) => ({
+    x: sizeX[tshirt[i]] || 0,
+    y: totals[i],
+    name,
+    ts: tshirt[i] || null,
+  }));
+
+  const midX = 2.5; // between M and L
+  const midY = maxVotes / 2;
+
+  // Quadrant background plugin
+  const quadrantPlugin = {
+    id: 'quadrants',
+    beforeDraw(chart) {
+      const {ctx, chartArea:{left,right,top,bottom}, scales:{x,y}} = chart;
+      const cx = x.getPixelForValue(midX);
+      const cy = y.getPixelForValue(midY);
+      const quads = [
+        {x:left,  y:top,    w:cx-left,    h:cy-top,    fill:'rgba(34,197,94,.06)',  label:'Quick Wins',        lx:left+(cx-left)*.5,  ly:top+18},
+        {x:cx,    y:top,    w:right-cx,   h:cy-top,    fill:'rgba(255,184,28,.06)', label:'Big Bets',          lx:cx+(right-cx)*.5,   ly:top+18},
+        {x:left,  y:cy,     w:cx-left,    h:bottom-cy, fill:'rgba(255,255,255,.03)',label:'Low Priority',      lx:left+(cx-left)*.5,  ly:cy+18},
+        {x:cx,    y:cy,     w:right-cx,   h:bottom-cy, fill:'rgba(239,68,68,.06)',  label:'High Effort / Low Value', lx:cx+(right-cx)*.5, ly:cy+18},
+      ];
+      quads.forEach(q => {
+        ctx.save();
+        ctx.fillStyle = q.fill;
+        ctx.fillRect(q.x,q.y,q.w,q.h);
+        ctx.fillStyle = 'rgba(255,255,255,.22)';
+        ctx.font = '600 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(q.label.toUpperCase(), q.lx, q.ly);
+        ctx.restore();
+      });
+      // Divider lines
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,.12)';
+      ctx.setLineDash([5,4]);
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx,top); ctx.lineTo(cx,bottom); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(left,cy); ctx.lineTo(right,cy); ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  // Label plugin — draws initiative name next to each dot
+  const labelPlugin = {
+    id: 'dotLabels',
+    afterDatasetsDraw(chart) {
+      const {ctx, scales:{x,y}} = chart;
+      chart.data.datasets.forEach((ds, di) => {
+        const pt = ds.data[0];
+        const px = x.getPixelForValue(pt.x);
+        const py = y.getPixelForValue(pt.y);
+        ctx.save();
+        ctx.font = '500 10px Inter, sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,.82)';
+        ctx.textAlign = 'left';
+        // Short label — first two words
+        const short = pt.name.replace(/^"/, '').split(' ').slice(0,3).join(' ');
+        ctx.fillText(short, px + 9, py + 4);
+        ctx.restore();
+      });
+    }
+  };
+
+  const ctx = document.getElementById('quadrant-chart').getContext('2d');
+  if (qChart) qChart.destroy();
+
+  qChart = new Chart(ctx, {
+    type: 'scatter',
+    plugins: [quadrantPlugin, labelPlugin],
+    data: {
+      datasets: points.map((pt, i) => ({
+        label: pt.name,
+        data: [pt],
+        pointRadius: 9,
+        pointHoverRadius: 12,
+        backgroundColor: pt.y === Math.max(...totals) ? '#FFB81C'
+          : pt.ts ? 'rgba(255,184,28,.55)' : 'rgba(255,255,255,.3)',
+        borderColor: pt.y === Math.max(...totals) ? '#FFB81C' : 'rgba(255,255,255,.4)',
+        borderWidth: 1.5,
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 600 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => items[0].dataset.label,
+            label: item => {
+              const pt = item.raw;
+              const sz = pt.ts || 'No size set';
+              return [`${pt.y} vote${pt.y!==1?'s':''}`, `Effort: ${sz}`];
+            }
+          },
+          backgroundColor: '#001A52',
+          borderColor: 'rgba(255,184,28,.4)',
+          borderWidth: 1,
+          titleColor: '#FFB81C',
+          bodyColor: 'rgba(255,255,255,.8)',
+          padding: 10,
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: -0.3, max: 4.7,
+          grid: { color: 'rgba(255,255,255,.06)' },
+          ticks: {
+            color: 'rgba(255,255,255,.5)',
+            font: { size: 11 },
+            callback: v => ({0:'—', 1:'S', 2:'M', 3:'L', 4:'XL'}[v] ?? ''),
+            stepSize: 1,
+          },
+          title: {
+            display: true,
+            text: '← Lower Effort        Higher Effort →',
+            color: 'rgba(255,255,255,.4)',
+            font: { size: 11 }
+          }
+        },
+        y: {
+          min: -0.3,
+          grid: { color: 'rgba(255,255,255,.06)' },
+          ticks: { color: 'rgba(255,255,255,.5)', font: { size: 11 }, stepSize: 1 },
+          title: {
+            display: true,
+            text: 'Votes (Impact signal)',
+            color: 'rgba(255,255,255,.4)',
+            font: { size: 11 }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderChart(ranked) {
+  const ctx = document.getElementById('results-chart').getContext('2d');
+  if (chart) chart.destroy();
+  const colors = ranked.map((_,i) => {
+    if (i===0) return '#FFB81C';
+    if (i===1) return '#d4a017';
+    if (i===2) return '#b8860b';
+    return 'rgba(255,255,255,.25)';
+  });
+  chart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: ranked.map(r => r.name.length > 26 ? r.name.slice(0,24)+'…' : r.name),
+      datasets:[{
+        data: ranked.map(r => r.votes),
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>` ${c.raw} vote${c.raw!==1?'s':''}`}}
+      },
+      scales:{
+        x:{
+          grid:{color:'rgba(255,255,255,.07)'},
+          ticks:{stepSize:1,font:{size:11},color:'rgba(255,255,255,.6)'},
+          min:0
+        },
+        y:{
+          grid:{display:false},
+          ticks:{font:{size:11},color:'rgba(255,255,255,.85)'}
+        }
+      }
+    }
+  });
+}
+
+function renderRanked(ranked, mat) {
+  const medals = ['🥇','🥈','🥉'];
+  const cls    = ['top1','top2','top3'];
+  document.getElementById('ranked-list').innerHTML = ranked.map((uc,rank) => {
+    const kpis = DRIVERS
+      .filter((_,di) => mat[di] && mat[di][uc.i])
+      .map(d => `<span class="kpi-tag">${d}</span>`).join('');
+    return `
+      <div class="ranked-card ${cls[rank]||''}">
+        <div class="rank-num">${rank<3?medals[rank]:rank+1}</div>
+        <div class="ranked-body">
+          <div class="ranked-name">${uc.name}</div>
+          <div class="kpi-tags">${kpis||'<span style="font-size:.65rem;color:rgba(255,255,255,.3)">No KPI mapped</span>'}</div>
+          <div class="ranked-footer">
+            <span class="res-vote-count">${uc.votes} vote${uc.votes!==1?'s':''}</span>
+            ${uc.ts?`<span class="tshirt-badge">${uc.ts}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderRoleTable(ranked, voters) {
+  const top5      = ranked.slice(0,5);
+  const roleNames = [...new Set(voters.map(v=>v._role))].filter(Boolean).sort();
+  const maxVotes  = voters.length * TOTAL_VOTES || 1;
+  let html = `<thead><tr>
+    <th>Role</th>
+    ${top5.map(uc=>`<th>${uc.name.split(' ').slice(0,3).join(' ')}</th>`).join('')}
+    <th>Total</th>
+  </tr></thead><tbody>`;
+  roleNames.forEach(role => {
+    const rv = voters.filter(v=>v._role===role);
+    const rt = rv.reduce((sum,v)=>sum+USE_CASES.reduce((s,_,i)=>s+(v[i]||0),0),0);
+    html += `<tr>
+      <td><strong>${role}</strong> <span style="color:rgba(255,255,255,.4);font-size:.7rem">(${rv.length})</span></td>
+      ${top5.map(uc=>{
+        const n=rv.reduce((s,v)=>s+(v[uc.i]||0),0);
+        return `<td style="text-align:center">${n||'—'}</td>`;
+      }).join('')}
+      <td>
+        <div style="display:flex;align-items:center;gap:.45rem">
+          <div class="role-bar-wrap" style="flex:1">
+            <div class="role-bar" style="width:${Math.round(rt/maxVotes*100)}%"></div>
+          </div>
+          <span style="font-size:.75rem;font-weight:700;color:var(--gold)">${rt}</span>
+        </div>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('role-table').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────
+// FACILITATOR
+// ─────────────────────────────────────────────────────────────
+function showFacLogin() {
+  document.getElementById('fac-login').hidden = false;
+  document.getElementById('fac-pw').value = '';
+  document.getElementById('pw-error').hidden = true;
+  setTimeout(()=>document.getElementById('fac-pw').focus(),50);
+}
+function hideFacLogin() { document.getElementById('fac-login').hidden = true; }
+function checkPw() {
+  if (document.getElementById('fac-pw').value === FAC_PASSWORD) {
+    hideFacLogin(); openFac();
+  } else { document.getElementById('pw-error').hidden = false; }
+}
+function openFac() { syncFacPanel(); document.getElementById('fac-overlay').hidden = false; }
+function closeFac() { document.getElementById('fac-overlay').hidden = true; }
+function closeFacIfBg(e) { if (e.target===document.getElementById('fac-overlay')) closeFac(); }
+
+function syncFacPanel() {
+  document.getElementById('fac-date').value = workshopDate();
+  syncRevealBtn();
+  renderTshirtRows();
+  renderMatrix();
+}
+
+function renderTshirtRows() {
+  const ts = tshirtSizes();
+  document.getElementById('tshirt-rows').innerHTML = USE_CASES.map((uc,i)=>`
+    <div class="fac-row">
+      <span class="fac-label">${uc}</span>
+      <select class="tshirt-select" onchange="saveTshirt(${i},this.value)">
+        <option value="">—</option>
+        ${['S','M','L','XL'].map(s=>`<option value="${s}" ${ts[i]===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function saveTshirt(i,v) {
+  const ts = tshirtSizes();
+  if (v) ts[i]=v; else delete ts[i];
+  save({tshirt:ts});
+  // Update badge in vote grid if visible
+  const badge = document.getElementById(`vc-tshirt-${i}`);
+  if (badge) badge.innerHTML = v ? `<span class="vc-tshirt">${v}</span>` : '';
+}
+
+function renderMatrix() {
+  const mat = matrix();
+  let html = '<thead><tr><th class="driver-col">KPI / Driver</th>';
+  USE_CASES.forEach(uc=>{html+=`<th title="${uc}">${uc.split(' ').slice(0,2).join(' ')}</th>`;});
+  html += '</tr></thead><tbody>';
+  DRIVERS.forEach((driver,di)=>{
+    html += `<tr><td class="driver-label">${driver}</td>`;
+    USE_CASES.forEach((_,ui)=>{
+      const on = mat[di]&&mat[di][ui];
+      html += `<td onclick="toggleCell(${di},${ui})" title="${driver} → ${USE_CASES[ui]}">
+        <span class="${on?'mc-on':'mc-off'}">${on?'✔':'○'}</span></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  document.getElementById('matrix-table').innerHTML = html;
+}
+
+function toggleCell(di,ui) {
+  const mat = matrix();
+  if (!mat[di]) mat[di]={};
+  mat[di][ui] = !mat[di][ui];
+  save({matrix:mat});
+  renderMatrix();
+  // Refresh KPI pills in vote cards if visible
+  const kpiEl = document.getElementById(`vc-kpis-${ui}`);
+  if (kpiEl) {
+    const newMat = matrix();
+    kpiEl.innerHTML = DRIVERS
+      .filter((_,di2)=>newMat[di2]&&newMat[di2][ui])
+      .map(d=>`<span class="vc-kpi-pill">${d}</span>`).join('');
+  }
+  if (!document.getElementById('view-results').hidden) renderResults();
+}
+
+function toggleReveal() {
+  const now = !isRevealed();
+  save({revealed:now});
+  syncRevealBtn();
+  if (now) showResults();
+}
+
+function syncRevealBtn() {
+  const btn = document.getElementById('btn-reveal');
+  if (!btn) return;
+  const rev = isRevealed();
+  btn.textContent = rev ? 'Hide Results' : 'Reveal Results';
+  btn.style.background = rev ? '#ef4444' : '';
+  btn.style.color = rev ? '#fff' : '';
+}
+
+function resetVotes() {
+  if (!confirm('Reset ALL votes? This cannot be undone.')) return;
+  save({votes:{},revealed:false});
+  syncRevealBtn();
+  updateNavVoteCount();
+  showView('view-landing');
+}
+
+function saveDate() {
+  const v = document.getElementById('fac-date').value;
+  if (v) {
+    save({workshopDate:v});
+    if (!document.getElementById('view-results').hidden) renderResults();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// VIEW ROUTING
+// ─────────────────────────────────────────────────────────────
+const ALL_VIEWS = ['view-landing','view-voting','view-waiting','view-results'];
+function showView(id) {
+  ALL_VIEWS.forEach(v=>{ document.getElementById(v).hidden = (v!==id); });
+}
+</script>
+</body>
+</html>
