@@ -1262,8 +1262,10 @@ function syncVoteUI() {
   const used      = myVotes.reduce((a,b)=>a+b,0);
   const rem       = TOTAL_VOTES - used;
   const votesDone = used === TOTAL_VOTES;
-  const tiersDone = myTiers.every(t => t !== null);
-  const allDone   = votesDone && tiersDone;
+  // Only require tiers on initiatives that received votes
+  const votedIdxs  = myVotes.map((v,i) => v > 0 ? i : -1).filter(i => i >= 0);
+  const tiersDone  = votesDone && votedIdxs.every(i => myTiers[i] !== null);
+  const allDone    = votesDone && tiersDone;
 
   // Big counter
   const numEl = document.getElementById('vote-counter-num');
@@ -1276,12 +1278,12 @@ function syncVoteUI() {
   wrap.classList.toggle('done', allDone);
 
   // Sub
-  const tiersLeft = myTiers.filter(t=>t===null).length;
+  const tiersLeft = votedIdxs.filter(i => myTiers[i] === null).length;
   document.getElementById('vote-hero-sub').textContent = allDone
     ? '✓ All votes and tiers set — submit below'
     : !votesDone
-      ? `${rem} vote${rem===1?'':' '}left · then assign a tier to each initiative`
-      : `${tiersLeft} tier${tiersLeft===1?'':' '}still to assign`;
+      ? `${rem} vote${rem===1?'':' '}left · then tier your voted initiatives`
+      : `${tiersLeft} tier${tiersLeft===1?'':' '}still to assign on your voted initiatives`;
 
   // Submit
   const sub = document.getElementById('btn-submit');
@@ -1289,8 +1291,8 @@ function syncVoteUI() {
   document.getElementById('vote-hint').textContent = allDone
     ? 'Happy with your choices? Hit submit.'
     : !votesDone
-      ? `Place all ${TOTAL_VOTES} votes, then assign 🔴🟡🟢 tier to each initiative`
-      : `Assign a tier to each initiative to enable submit`;
+      ? `Place all ${TOTAL_VOTES} votes, then assign 🔴🟡🟢 tier to each voted initiative`
+      : `Assign a tier to each initiative you voted on`;
 
   USE_CASES.forEach((_,i) => {
     const v    = myVotes[i];
@@ -1317,7 +1319,9 @@ function syncVoteUI() {
 function submitVotes() {
   if (!voter) return;
   if (myVotes.reduce((a,b)=>a+b,0) < TOTAL_VOTES) return;
-  if (myTiers.some(t=>t===null)) return;
+  // Only require tiers on initiatives that were voted on
+  const votedIdxs = myVotes.map((v,i) => v > 0 ? i : -1).filter(i => i >= 0);
+  if (votedIdxs.some(i => myTiers[i] === null)) return;
   const votes  = allVotes();
   const entry  = { _name: voter.name, _role: voter.role };
   myVotes.forEach((v,i) => { if (v > 0) entry[i] = v; });
