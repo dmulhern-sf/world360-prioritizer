@@ -1062,6 +1062,10 @@ const FAC_PASSWORD = 'world360';
 const TOTAL_VOTES  = 5;
 const MAX_PER_UC   = 2;
 
+// ── Google Sheets backend ─────────────────────────────────
+// Paste your deployed Apps Script URL here after setup:
+const SHEET_URL = '';
+
 const USE_CASES = [
   'Partner Linking',
   'AI-Driven Personalised Promotions',
@@ -1271,6 +1275,7 @@ let myTiers = new Array(USE_CASES.length).fill(null);
 window.addEventListener('load', () => {
   restoreFromUrl();   // silently restores state from ?s= param if present
   populateRoles();
+  fetchRemoteVotes(); // pull any existing remote votes into local cache
   updateNavVoteCount();
   if (isRevealed()) showResults();
 });
@@ -1441,15 +1446,28 @@ function syncVoteUI() {
 function submitVotes() {
   if (!voter) return;
   if (myVotes.reduce((a,b)=>a+b,0) < TOTAL_VOTES) return;
-  // Only require tiers on initiatives that were voted on
   const votedIdxs = myVotes.map((v,i) => v > 0 ? i : -1).filter(i => i >= 0);
   if (votedIdxs.some(i => myTiers[i] === null)) return;
-  const votes  = allVotes();
-  const entry  = { _name: voter.name, _role: voter.role };
+
+  const entry = { _name: voter.name, _role: voter.role };
   myVotes.forEach((v,i) => { if (v > 0) entry[i] = v; });
   myTiers.forEach((t,i) => { entry[`t${i}`] = t; });
+
+  // Always write to local cache so the UI is immediately consistent
+  const votes = allVotes();
   votes[voter.name] = entry;
   save({ votes });
+
+  // POST to Google Sheets if URL is configured
+  if (SHEET_URL) {
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    }).catch(() => {}); // silent — local cache is the fallback
+  }
+
   showView('view-waiting');
   updateWaitingCount();
   updateNavVoteCount();
@@ -1463,6 +1481,43 @@ function updateWaitingCount() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// REMOTE VOTE SYNC (Google Sheets)
+// ─────────────────────────────────────────────────────────────
+let _pollTimer = null;
+
+async function fetchRemoteVotes() {
+  if (!SHEET_URL) return;
+  try {
+    const res  = await fetch(SHEET_URL + '?action=getVotes');
+    const rows = await res.json(); // [{_name,_role,0:v,...,t0:tier,...}, ...]
+    const votes = allVotes();
+    let changed = false;
+    rows.forEach(row => {
+      if (row._name && JSON.stringify(votes[row._name]) !== JSON.stringify(row)) {
+        votes[row._name] = row;
+        changed = true;
+      }
+    });
+    if (changed) {
+      save({ votes });
+      updateNavVoteCount();
+      updateWaitingCount();
+      if (!document.getElementById('view-results').hidden) renderResults();
+      if (!document.getElementById('view-waiting').hidden && isRevealed()) showResults();
+    }
+  } catch(e) {}
+}
+
+function startResultsPolling() {
+  fetchRemoteVotes();
+  if (!_pollTimer) _pollTimer = setInterval(fetchRemoteVotes, 10000);
+}
+
+function stopResultsPolling() {
+  if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; }
+}
+
+// ─────────────────────────────────────────────────────────────
 // RESULTS
 // ─────────────────────────────────────────────────────────────
 let chart = null;
@@ -1470,6 +1525,7 @@ let chart = null;
 function showResults() {
   showView('view-results');
   renderResults();
+  startResultsPolling();
 }
 
 function renderResults() {
@@ -1827,6 +1883,7 @@ function syncTimerDisplay() {
 const ALL_VIEWS = ['view-landing','view-voting','view-waiting','view-results'];
 function showView(id) {
   ALL_VIEWS.forEach(v=>{ document.getElementById(v).hidden = (v!==id); });
+  if (id !== 'view-results') stopResultsPolling();
 }
 </script>
 </body>
