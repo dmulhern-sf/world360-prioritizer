@@ -513,6 +513,17 @@ body{
 .tier-final-badge.high{background:#eab308;color:#1a1a1a}
 .tier-final-badge.strategic{background:#22c55e;color:#fff}
 
+/* ── FAC DATA WARNING ────────────────────────────────────── */
+.fac-data-warning{
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.4);
+  border-radius:10px;
+  padding:.7rem 1rem;
+  font-size:.75rem;color:#fca5a5;
+  line-height:1.5;margin-bottom:1.25rem
+}
+.fac-data-warning strong{color:#f87171}
+
 /* ── FAC VOTING NOTE ─────────────────────────────────────── */
 .fac-voting-note{
   background:rgba(255,184,28,.08);
@@ -937,6 +948,30 @@ body{
       <button class="btn-close" onclick="closeFac()">✕</button>
     </div>
 
+    <div class="fac-data-warning">
+      ⚠️ <strong>Vote data is stored in this browser only</strong> — export or copy the backup URL before closing this tab.
+    </div>
+
+    <div class="fac-section">
+      <div class="fac-section-title">Data Safety</div>
+      <div class="fac-row">
+        <span class="fac-label">Copy a backup URL to restore this session</span>
+        <button class="fac-btn" onclick="copyStateUrl()">📋 Copy URL</button>
+      </div>
+      <div id="url-copy-feedback" style="font-size:.72rem;color:#86efac;margin-top:-.2rem;margin-bottom:.4rem;min-height:1rem"></div>
+      <div class="fac-row">
+        <span class="fac-label">Download full vote data as JSON</span>
+        <button class="fac-btn" onclick="exportJSON()">⬇ Export JSON</button>
+      </div>
+      <div class="fac-row" style="margin-top:.3rem">
+        <span class="fac-label">Restore from a votes.json file</span>
+        <label class="fac-btn" style="cursor:pointer">
+          ↑ Import JSON
+          <input type="file" accept=".json" style="display:none" onchange="importJSON(this)">
+        </label>
+      </div>
+    </div>
+
     <div class="fac-section">
       <div class="fac-section-title">Session Timing</div>
       <div class="timer-phase-label" id="timer-phase-label">Voting phase opens at 0:25</div>
@@ -1099,6 +1134,92 @@ function load() {
 function save(patch) {
   const s = load(); Object.assign(s, patch);
   localStorage.setItem(KEY, JSON.stringify(s));
+  pushStateUrl(s);
+}
+
+// ── URL state encode/restore ──────────────────────────────
+function pushStateUrl(state) {
+  try {
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    const url = location.pathname + '?s=' + encoded;
+    history.replaceState(null, '', url);
+  } catch(e) {}
+}
+
+function restoreFromUrl() {
+  try {
+    const params = new URLSearchParams(location.search);
+    const s = params.get('s');
+    if (!s) return false;
+    const state = JSON.parse(decodeURIComponent(escape(atob(s))));
+    localStorage.setItem(KEY, JSON.stringify(state));
+    return true;
+  } catch(e) { return false; }
+}
+
+function copyStateUrl() {
+  try {
+    const state   = load();
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    const url     = location.origin + location.pathname + '?s=' + encoded;
+    navigator.clipboard.writeText(url).then(() => {
+      const fb = document.getElementById('url-copy-feedback');
+      fb.textContent = '✓ Backup URL copied to clipboard';
+      setTimeout(() => { fb.textContent = ''; }, 3000);
+    });
+  } catch(e) {}
+}
+
+// ── JSON export / import ──────────────────────────────────
+function exportJSON() {
+  const state    = load();
+  const voters   = Object.values(state.votes || {});
+  const tshirt   = state.tshirt || {};
+  const overrides = state.tierOverrides || {};
+  const payload  = {
+    exportedAt: new Date().toISOString(),
+    workshopDate: workshopDate(),
+    participants: voters.map(v => ({
+      name:  v._name,
+      role:  v._role,
+      votes: USE_CASES.reduce((o,_,i) => { if (v[i]) o[USE_CASES[i]] = v[i]; return o; }, {}),
+      tiers: USE_CASES.reduce((o,_,i) => { if (v[`t${i}`]) o[USE_CASES[i]] = v[`t${i}`]; return o; }, {}),
+    })),
+    tshirtSizes: USE_CASES.reduce((o,uc,i) => { if (tshirt[i]) o[uc] = tshirt[i]; return o; }, {}),
+    tierOverrides: USE_CASES.reduce((o,uc,i) => { if (overrides[i]) o[uc] = overrides[i]; return o; }, {}),
+    rawState: state,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `world360-votes-${workshopDate()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      // Accept either the full exported payload (has rawState) or a bare state object
+      const state = payload.rawState || payload;
+      if (!confirm(`Import ${Object.keys(state.votes||{}).length} participant vote(s) from "${file.name}"? This will overwrite current data.`)) return;
+      localStorage.setItem(KEY, JSON.stringify(state));
+      pushStateUrl(state);
+      syncFacPanel();
+      if (isRevealed()) showResults();
+      const fb = document.getElementById('url-copy-feedback');
+      fb.textContent = '✓ Imported successfully';
+      setTimeout(() => { fb.textContent = ''; }, 3000);
+    } catch(err) {
+      alert('Could not parse JSON file — make sure it is an unmodified export from this tool.');
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
 }
 function allVotes()     { return load().votes  || {}; }
 function tshirtSizes()  { return load().tshirt || {}; }
@@ -1148,6 +1269,7 @@ let myTiers = new Array(USE_CASES.length).fill(null);
 // INIT
 // ─────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
+  restoreFromUrl();   // silently restores state from ?s= param if present
   populateRoles();
   updateNavVoteCount();
   if (isRevealed()) showResults();
