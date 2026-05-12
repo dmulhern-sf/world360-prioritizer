@@ -242,6 +242,19 @@ body{
 }
 @media(max-width:960px){.vote-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:660px){.vote-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){
+  .vote-grid{grid-template-columns:1fr}
+  .vote-body{padding:1rem .75rem}
+  .vote-card{padding:1.1rem 1rem}
+  .vc-stepper{justify-content:center;gap:1rem}
+  .vc-tier-select{width:100%}
+  .vc-kpis{gap:.25rem}
+  .vote-submit-area{flex-direction:column;align-items:stretch;padding:1rem 0 2rem}
+  .btn-submit{text-align:center}
+  .vote-hero{padding:1rem}
+  .nav{padding:0 .75rem;gap:.5rem}
+  .nav-subtitle{display:none}
+}
 
 /* VOTE CARD */
 .vote-card{
@@ -716,6 +729,7 @@ body{
   .landing-card{padding:1.75rem 1.25rem}
   .vote-hero{padding:1.1rem 1rem}
   .vote-body{padding:1rem}
+  .nav-voter-badge span:not(.dot){max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 </style>
 
